@@ -1,0 +1,10 @@
+<Context>
+
+  <Resource name="jdbc/amc" 
+  			auth="Container" type="javax.sql.DataSource"
+               maxActive="20" maxIdle="5" maxWait="10000"
+               username="root" password="" 
+               driverClassName="com.mysql.jdbc.Driver"
+               url="jdbc:mysql://localhost:3306/amr?useSSL=false"/>
+
+</Context>
