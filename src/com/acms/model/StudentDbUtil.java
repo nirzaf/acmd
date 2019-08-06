@@ -15,7 +15,7 @@ import com.acms.jdbc.Student;
 public class StudentDbUtil {
 
 	// Define datasource/connection pool for Resource Injection
-	@Resource(name = "jdbc/ams")
+	@Resource(name = "jdbc/b0aG7Ixbhn")
 	private DataSource dataSource;
 
 	public StudentDbUtil(DataSource theDataSource) {
