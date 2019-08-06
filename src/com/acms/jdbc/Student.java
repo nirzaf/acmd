@@ -7,8 +7,22 @@ public class Student {
 	private String address;
 	private String email;
 	private String telephone;
-		
-	public Student(String first_name, String last_name, String address, String email, String telephone) {
+	private boolean isDeleted;	
+	
+	public Student(int student_id, String first_name, String last_name, String address, String email, String telephone, boolean isDeleted) {
+		this.student_id = student_id;
+		this.first_name = first_name;
+		this.last_name = last_name;
+		this.address = address;
+		this.email = email;
+		this.telephone = telephone;
+		this.isDeleted = isDeleted;
+	}
+	
+	public Student(int student_id, String first_name, String last_name, String address, String email,
+			String telephone) {
+		super();
+		this.student_id = student_id;
 		this.first_name = first_name;
 		this.last_name = last_name;
 		this.address = address;
@@ -16,9 +30,10 @@ public class Student {
 		this.telephone = telephone;
 	}
 
-	public Student(int student_id, String first_name, String last_name, String address, String email,
+
+
+	public Student(String first_name, String last_name, String address, String email,
 			String telephone) {
-		this.student_id = student_id;
 		this.first_name = first_name;
 		this.last_name = last_name;
 		this.address = address;
@@ -72,6 +87,14 @@ public class Student {
 
 	public void setTelephone(String telephone) {
 		this.telephone = telephone;
+	}
+	
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 	@Override

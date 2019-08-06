@@ -15,8 +15,8 @@ import javax.sql.DataSource;
 import com.acms.jdbc.Student;
 import com.acms.model.StudentDbUtil;
 
-@WebServlet("/studentControllerServlet")
-public class studentControllerServlet extends HttpServlet {
+@WebServlet("/ownerControllerServlet")
+public class ownerControllerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private StudentDbUtil studentDbUtil;
@@ -75,7 +75,7 @@ public class studentControllerServlet extends HttpServlet {
 				listStudents(request, response);
 			}
 		} catch (Exception ex) {
-			throw new ServletException(ex);
+			throw new ServletException(ex.getMessage());
 		}
 	}
 
@@ -100,9 +100,8 @@ public class studentControllerServlet extends HttpServlet {
 		String address = request.getParameter("address");
 		String email = request.getParameter("email");
 		String telephone = request.getParameter("telephone");
-		boolean isDeleted = Boolean.parseBoolean(request.getParameter("isDeleted"));
 		// create a new student object
-		Student theStudent = new Student(student_id, firstName, lastName, address, email, telephone,isDeleted);
+		Student theStudent = new Student(student_id, firstName, lastName, address, email, telephone);
 
 		// perform update on database
 		studentDbUtil.updateStudent(theStudent);

@@ -12,15 +12,17 @@
 
 <div id="wrapper">
 		<div id="header">
-			<h2>XYZ University</h2>
+			<h2 align="center">XYZ University</h2>
 		</div>
 	</div>
-	
-	<input type="button" value="Add Student" onclick="window.location.href='add-student-form.jsp'; return false;" class="add-student-button">
-	
+		
 	<div id="container">
+		
 		<div id="content">
 			<table>
+					<tr> 
+						<input type="button" value="Add Student" onclick="window.location.href='add-student-form.jsp'; return false;" class="add-student-button">
+					</tr>
 				<tr>
 					<th>First Name</th>
 					<th>Last Name</th>

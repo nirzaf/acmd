@@ -20,7 +20,46 @@ public class UserAccountDbUtil {
 		dataSource = theDataSource;
 	}
 
-	
+	public UserAccount findUser(String username, String password) throws Exception {
+		UserAccount theUser = null;
+		Connection myConn = null;
+		Statement myStmt = null;
+		ResultSet myRs = null;
+
+		try {
+
+			// get a connection
+			myConn = dataSource.getConnection();
+
+			// create sql statement
+			String sql = "select * from tbl_users where username=?, password=?";
+
+			myStmt = myConn.createStatement();
+
+			// execute query
+			myRs = myStmt.executeQuery(sql);
+
+			// process result set
+			if (myRs.next()) {
+				// retrieve data from result set row
+				int User_id = myRs.getInt("user_id");
+				String Username = username;
+				String Password = password;
+				int User_type = myRs.getInt("user_type");
+				boolean Status = myRs.getBoolean("status");
+
+				// create new user account object
+				theUser = new UserAccount(User_id, Username, Password, User_type, Status);
+			} else {
+				throw new Exception("Username or Password is Invalid! ");
+			}
+			return theUser;
+		} finally {
+			close(myConn, myStmt, myRs);
+		}
+
+	}
+
 	// Return the list of users
 	public List<UserAccount> getUserAccounts() throws Exception {
 
@@ -65,7 +104,7 @@ public class UserAccountDbUtil {
 		}
 	}
 
-	//create user account
+	// create user account
 	public void createUser(UserAccount theUser) throws Exception {
 		Connection myConn = null;
 		PreparedStatement myStmt = null;
@@ -92,7 +131,7 @@ public class UserAccountDbUtil {
 		}
 	}
 
-	//update user account details
+	// update user account details
 	public void updateUser(UserAccount theUser) throws Exception {
 
 		Connection myConn = null;
@@ -122,7 +161,7 @@ public class UserAccountDbUtil {
 		}
 	}
 
-	//activate the user account
+	// activate the user account
 	public void activateUser(String theUserId) throws Exception {
 
 		Connection myConn = null;
@@ -131,7 +170,7 @@ public class UserAccountDbUtil {
 		try {
 			// convert user id to int
 			int userId = Integer.parseInt(theUserId);
-			
+
 			// get db connection
 			myConn = dataSource.getConnection();
 
@@ -140,7 +179,7 @@ public class UserAccountDbUtil {
 
 			// prepare statement
 			myStmt = myConn.prepareStatement(sql);
-			
+
 			// set params
 			myStmt.setInt(1, userId);
 
@@ -152,7 +191,7 @@ public class UserAccountDbUtil {
 		}
 	}
 
-	//get user details by user id
+	// get user details by user id
 	public UserAccount getUser(String userId) throws Exception {
 
 		UserAccount theUser = null;
@@ -199,8 +238,8 @@ public class UserAccountDbUtil {
 			close(myConn, myStmt, myRs);
 		}
 	}
-	
-	//disable the user account
+
+	// disable the user account
 	public void deleteUser(String theUserId) throws Exception {
 
 		Connection myConn = null;

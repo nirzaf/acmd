@@ -35,7 +35,7 @@ public class StudentDbUtil {
 			myConn = dataSource.getConnection();
 
 			// create sql statement
-			String sql = "select * from tbl_student order by first_name";
+			String sql = "select * from `tbl_student` where `isDeleted` = 1 order by `first_name` ";
 
 			myStmt = myConn.createStatement();
 
@@ -51,9 +51,9 @@ public class StudentDbUtil {
 				String address = myRs.getString("address");
 				String email = myRs.getString("email");
 				String telephone = myRs.getString("telephone");
-
+                boolean isDeleted = myRs.getBoolean("isDeleted");
 				// create new student object
-				Student tempStudent = new Student(id, firstName, lastName, address, email, telephone);
+				Student tempStudent = new Student(id, firstName, lastName, address, email, telephone,isDeleted);
 
 				// add it to the list of students
 				students.add(tempStudent);
@@ -162,9 +162,10 @@ public class StudentDbUtil {
 				String address = myRs.getString("address");
 				String email = myRs.getString("email");
 				String telephone = myRs.getString("telephone");
+				boolean isDeleted = myRs.getBoolean("isDeleted");
 
 				// use the studentId during construction
-				theStudent = new Student(student_id, firstName, lastName, address, email, telephone);
+				theStudent = new Student(student_id, firstName, lastName, address, email, telephone, isDeleted);
 			} else {
 				throw new Exception("Could not find student id: " + student_id);
 			}
@@ -189,7 +190,7 @@ public class StudentDbUtil {
 			myConn = dataSource.getConnection();
 
 			// create sql to delete student
-			String sql = "delete from tbl_student where student_id=?";
+			String sql = "update `tbl_student` set `isDeleted` = 0 where `student_id` = ?";
 
 			// prepare statement
 			myStmt = myConn.prepareStatement(sql);

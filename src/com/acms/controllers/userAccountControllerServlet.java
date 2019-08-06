@@ -11,14 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-import com.acms.jdbc.Student;
 import com.acms.jdbc.UserAccount;
-import com.acms.model.StudentDbUtil;
 import com.acms.model.UserAccountDbUtil;
 
-/**
- * Servlet implementation class studentControllerServlet
- */
 @WebServlet("/userAccountControllerServlet")
 public class userAccountControllerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -47,7 +42,7 @@ public class userAccountControllerServlet extends HttpServlet {
 			// read the "command" parameter
 			String theCommand = request.getParameter("command");
 
-			// if the command is missing, then default to listing students
+			// if the command is missing, then default to listing users
 			if (theCommand == null) {
 				theCommand = "LIST";
 			}
@@ -59,21 +54,15 @@ public class userAccountControllerServlet extends HttpServlet {
 				listUsers(request, response);
 				break;
 
-			case "ADD":
-				createUser(request, response);
-				break;
-
-			case "LOAD":
-				loadUser(request, response);
-				break;
-
-			case "UPDATE":
-				updateUser(request, response);
-				break;
-
-			case "DELETE":
-				deleteUser(request, response);
-				break;
+			/*
+			 * case "ADD": addStudent(request, response); break;
+			 * 
+			 * case "LOAD": loadStudent(request, response); break;
+			 * 
+			 * case "UPDATE": updateStudent(request, response); break;
+			 * 
+			 * case "DELETE": deleteStudent(request, response); break;
+			 */
 
 			default:
 				listUsers(request, response);
@@ -84,15 +73,13 @@ public class userAccountControllerServlet extends HttpServlet {
 	}
 
 	private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		// read student id from form data
+	  
+	  // read user id from form data 
 		String theUserId = request.getParameter("user_id");
-
-		// delete student from database
-		userAccountDbUtil.deleteUser(theUserId);
-
-		// send them back to "list students" page
-		listUsers(request, response);
+	  
+	  // delete student from database userAccountDbUtil.deleteUser(theUserId);
+	  
+	  // send them back to "list students" page listUsers(request, response); 
 	}
 
 	private void updateUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -107,11 +94,9 @@ public class userAccountControllerServlet extends HttpServlet {
 		// create a new user object
 		UserAccount theUser = new UserAccount(user_id, username, password, user_type, status);
 
-		// perform update on database
-		userAccountDbUtil.updateUser(theUser);
+		// perform update on database userAccountDbUtil.updateUser(theUser);
 
-		// send them back to the "list users" page
-		listUsers(request, response);
+		// send them back to the "list users" page listUsers(request, response);
 
 	}
 
@@ -132,8 +117,8 @@ public class userAccountControllerServlet extends HttpServlet {
 		dispatcher.forward(request, response);
 	}
 
-	private void createUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// read student info from form data
+	private void createUser(HttpServletRequest request, HttpServletResponse response) throws Exception { 
+		// read user info from form data
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		int user_type = Integer.parseInt(request.getParameter("user_type"));
@@ -142,17 +127,14 @@ public class userAccountControllerServlet extends HttpServlet {
 		// create a new user object
 		UserAccount theUser = new UserAccount(username, password, user_type, status);
 
-		// add the user to the database
-		userAccountDbUtil.createUser(theUser);
+		// add the user to the database userAccountDbUtil.createUser(theUser);
 
-		// send back to main page (the users list)
-		listUsers(request, response);
+		// send back to main page (the users list) listUsers(request, response);
 	}
 
 	// List of Users
-	private void listUsers(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private void listUsers(HttpServletRequest request, HttpServletResponse response) throws Exception { 
 		// get students list from dbUtil
-
 		List<UserAccount> user = userAccountDbUtil.getUserAccounts();
 
 		// add users to the request
