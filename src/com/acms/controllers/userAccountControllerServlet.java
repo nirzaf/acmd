@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import com.acms.jdbc.UserAccount;
+import com.acms.model.SqliteConUtil;
 import com.acms.model.UserAccountDbUtil;
 
 //newly added
@@ -21,18 +22,21 @@ public class userAccountControllerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private UserAccountDbUtil userAccountDbUtil;
+	/*
+	 * @Resource(name = "jdbc/ams")
+	 * 
+	 * private DataSource dataSource;
+	 */
 
-	@Resource(name = "jdbc/ams")
-
-	private DataSource dataSource;
-
+	SqliteConUtil conn = new SqliteConUtil();
+	
 	@Override
 	public void init() throws ServletException {
 		// TODO Auto-generated method stub
 		super.init();
 
 		try {
-			userAccountDbUtil = new UserAccountDbUtil(dataSource);
+			userAccountDbUtil = new UserAccountDbUtil(conn);
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}

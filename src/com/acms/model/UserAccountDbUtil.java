@@ -12,12 +12,10 @@ import com.acms.jdbc.UserAccount;
 
 public class UserAccountDbUtil {
 
-	// Define datasource/connection pool for Resource Injection
-	@Resource(name = "jdbc/ams")
-	private DataSource dataSource;
-
-	public UserAccountDbUtil(DataSource theDataSource) {
-		dataSource = theDataSource;
+	SqliteConUtil conn = new SqliteConUtil() ;
+	
+	public UserAccountDbUtil(SqliteConUtil con) {
+		con = this.conn;
 	}
 
 	public UserAccount findUser(String username, String password) throws Exception {
@@ -29,7 +27,7 @@ public class UserAccountDbUtil {
 		try {
 
 			// get a connection
-			myConn = dataSource.getConnection();
+			myConn = conn.getMySQLConnection();
 
 			// create sql statement
 			String sql = "select * from tbl_users where username=?, password=?";
@@ -71,7 +69,7 @@ public class UserAccountDbUtil {
 
 		try {
 			// get a connection
-			myConn = dataSource.getConnection();
+			myConn = conn.getMySQLConnection();
 
 			// create sql statement
 			String sql = "select * from tbl_users";
@@ -111,7 +109,7 @@ public class UserAccountDbUtil {
 
 		try {
 			// get db connection
-			myConn = dataSource.getConnection();
+			myConn = conn.getMySQLConnection();
 
 			// create sql for insert
 			String sql = "insert into tbl_users " + "(username, password, user_type)" + "values (?, ?, ?)";
@@ -139,7 +137,7 @@ public class UserAccountDbUtil {
 
 		try {
 			// get db connection
-			myConn = dataSource.getConnection();
+			myConn = conn.getMySQLConnection();
 
 			// create SQL update statement
 			String sql = "update tbl_users " + "set username=?, password=?, user_type=? " + "where user_id=?";
@@ -172,7 +170,7 @@ public class UserAccountDbUtil {
 			int userId = Integer.parseInt(theUserId);
 
 			// get db connection
-			myConn = dataSource.getConnection();
+			myConn = conn.getMySQLConnection();
 
 			// create SQL update statement
 			String sql = "update tbl_users set status=1 where user_id=?";
@@ -205,7 +203,7 @@ public class UserAccountDbUtil {
 			user_id = Integer.parseInt(userId);
 
 			// get connection to database
-			myConn = dataSource.getConnection();
+			myConn = conn.getMySQLConnection();
 
 			// create sql to get selected user
 			String sql = "select * from tbl_user where user_id=?";
@@ -250,7 +248,7 @@ public class UserAccountDbUtil {
 			int userId = Integer.parseInt(theUserId);
 
 			// get connection to database
-			myConn = dataSource.getConnection();
+			myConn = conn.getMySQLConnection();
 
 			// create sql to delete/disable user
 			String sql = "update tbl_users status=0 where user_id=?";

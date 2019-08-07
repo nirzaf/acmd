@@ -14,25 +14,22 @@ import com.acms.jdbc.Student;
 
 public class StudentDbUtil {
 
-	// Define datasource/connection pool for Resource Injection
-	@Resource(name = "jdbc/ams")
-	private DataSource dataSource;
+	SqliteConUtil conn = new SqliteConUtil();
 
-	public StudentDbUtil(DataSource theDataSource) {
-		dataSource = theDataSource;
+	public StudentDbUtil(SqliteConUtil con) {
+		con = this.conn;
 	}
 
 	public List<Student> getStudents() throws Exception {
 
 		List<Student> students = new ArrayList<>();
-
 		Connection myConn = null;
 		Statement myStmt = null;
 		ResultSet myRs = null;
 
 		try {
 			// get a connection
-			myConn = dataSource.getConnection();
+			myConn = conn.getMySQLConnection();
 
 			// create sql statement
 			String sql = "select * from `tbl_student` where `isDeleted` = 1 order by `first_name` ";
@@ -72,7 +69,7 @@ public class StudentDbUtil {
 
 		try {
 			// get db connection
-			myConn = dataSource.getConnection();
+			myConn = conn.getMySQLConnection();
 
 			// create sql for insert
 			String sql = "insert into tbl_student " + "(first_name, last_name, address, email, telephone)"
@@ -102,7 +99,7 @@ public class StudentDbUtil {
 
 		try {
 			// get db connection
-			myConn = dataSource.getConnection();
+			myConn = conn.getMySQLConnection();
 
 			// create SQL update statement
 			String sql = "update tbl_student " + "set first_name=?, last_name=?, address=? ,email=? , telephone=? "
@@ -141,7 +138,7 @@ public class StudentDbUtil {
 			student_id = Integer.parseInt(studentId);
 
 			// get connection to database
-			myConn = dataSource.getConnection();
+			myConn = conn.getMySQLConnection();
 
 			// create sql to get selected student
 			String sql = "select * from tbl_student where student_id=?";
@@ -187,7 +184,7 @@ public class StudentDbUtil {
 			int studentId = Integer.parseInt(theStudentId);
 
 			// get connection to database
-			myConn = dataSource.getConnection();
+			myConn = conn.getMySQLConnection();
 
 			// create sql to delete student
 			String sql = "update `tbl_student` set `isDeleted` = 0 where `student_id` = ?";

@@ -25,19 +25,14 @@
 					<th>Username</th>
 					<th>Password</th>
 					<th>User Type</th>
+				    <th>Status</th>
 					<th>Action</th>
 				</tr>	
 				<c:forEach var="tempUser" items="${USER_LIST}">
-					
-					<!-- set up a link for each student -->
-					<c:url var="tempLink" value="userAccountControllerServlet">
-						<c:param name="command" value="LOAD" />
-						<c:param name="user_id" value="${tempUser.user_id}" />
-					</c:url>
-					
-					<!--  set up a link to delete a student -->
-					<c:url var="deleteLink" value="studentControllerServlet">
-						<c:param name="command" value="DELETE" />
+										
+					<!--  set up a link to enable or disable user account -->
+					<c:url var="deleteLink" value="userAccountControllerServlet">
+						<c:param name="command" value="DISABLE" />
 						<c:param name="user_id" value="${tempUser.user_id}" />
 					</c:url>
 				
@@ -45,10 +40,11 @@
 						<td> ${tempUser.user_id} </td>
 						<td> ${tempUser.username} </td>
 						<td> ${tempUser.password} </td>	
-						<td> ${(tempUser.user_type)==1?'Owner':'Student'} </td>
+						<td> ${(tempUser.user_type)==1?'Owner':'Student'} </td>			
+						<td> ${(tempUser.status)?'Enabled':'Disabled'} </td>
 						<td> 
-							<a href="${tempLink}">Update</a> | <a href="${deleteLink}" onclick="if (!(confirm('Are you sure you want to delete this User?'))) return false">Delete</a>	
-						</td>			
+							<a href="${deleteLink}" onclick="if (!(confirm('Are you sure you want to  ${!(tempUser.status)?'Enable':'Disable'} this User?'))) return false">${(tempUser.status)?'Disable':'Enable'}</a>	
+						</td>
 					</tr>
 				</c:forEach>
 			</table>
@@ -56,4 +52,3 @@
 	</div>
 </body>
 </html>
-
