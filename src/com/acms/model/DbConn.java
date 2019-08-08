@@ -14,10 +14,9 @@ public static void main (String[] args)
 
        try
        {
-           String url = "jdbc:sqlite:C:/sqlite/ams.db";
+           String url = "jdbc:sqlite:C:/sqlite/amts.db";
            Class.forName("org.sqlite.JDBC");
            conn = DriverManager.getConnection(url);
-           //System.out.println ("Database connection established");
        }
        catch (Exception e)
        {

@@ -42,8 +42,8 @@
 					<tr>
 						<td><label>Account Type:</label></td>
 						<td><select name="account-type" required> 
-						 <option value = "1">Student</option>
-						 <option value = "2">Owner</option>
+						 <option value =1>Student</option>
+						 <option value =2>Owner</option>
 						</select></td>
 					</tr>
 					

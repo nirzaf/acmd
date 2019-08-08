@@ -12,10 +12,61 @@ import com.acms.jdbc.UserAccount;
 
 public class UserAccountDbUtil {
 
-	SqliteConUtil conn = new SqliteConUtil() ;
-	
+	SqliteConUtil conn = new SqliteConUtil();
+
 	public UserAccountDbUtil(SqliteConUtil con) {
 		con = this.conn;
+	}
+
+	public boolean Auth(UserAccount theUser) {
+		Connection myConn = null;
+		Statement myStmt = null;
+		ResultSet myRs = null;
+
+		// Keeping user entered values in temporary variables.
+		String Username = theUser.getUsername();
+		String Password = theUser.getPassword();
+
+		System.out.println("User entered username : " + Username);
+		System.out.println("User entered password : " + Password);
+
+		// Temporary Strings to hold username and password fetched from database
+		String dbUsername = "";
+		String dbPassword = "";
+
+		try {
+			// get a connection
+			myConn = conn.getMySQLConnection();
+
+			// create sql statement
+			String sql = "select username, password from tbl_users where status=1";
+
+			// Prepare statement for db connection
+			myStmt = myConn.createStatement();
+
+			// execute query
+			myRs = myStmt.executeQuery(sql);
+
+			while (myRs.next()) {
+				dbUsername = myRs.getString("username");
+				dbPassword = myRs.getString("password");
+
+				System.out.println("username retrived from db : " + dbUsername);
+				System.out.println("password retrived from db : " + dbPassword);
+
+				// Validate the username and password by matching with db username and password
+				if (dbUsername.equals(Username) && dbPassword.equals(Password)) {
+					System.out.println("Username and Password Validated");
+					return true;
+				}
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			close(myConn, myStmt, myRs);
+		}
+		return false;
 	}
 
 	public UserAccount findUser(String username, String password) throws Exception {
@@ -30,8 +81,9 @@ public class UserAccountDbUtil {
 			myConn = conn.getMySQLConnection();
 
 			// create sql statement
-			String sql = "select * from tbl_users where username=?, password=?";
+			String sql = "select * from tbl_users where username=?, password=?, status=1";
 
+			// Prepare statement for db connection
 			myStmt = myConn.createStatement();
 
 			// execute query
@@ -55,7 +107,6 @@ public class UserAccountDbUtil {
 		} finally {
 			close(myConn, myStmt, myRs);
 		}
-
 	}
 
 	// Return the list of users
@@ -117,10 +168,9 @@ public class UserAccountDbUtil {
 			myStmt = myConn.prepareStatement(sql);
 
 			// set the parameters
-			myStmt.setString(2, theUser.getUsername());
-			myStmt.setString(3, theUser.getPassword());
-			myStmt.setInt(4, theUser.getUser_type());
-
+			myStmt.setString(1, theUser.getUsername());
+			myStmt.setString(2, theUser.getPassword());
+			myStmt.setInt(3, theUser.getUser_type());
 			// execute sql insert
 			myStmt.execute();
 		} finally {
@@ -155,6 +205,37 @@ public class UserAccountDbUtil {
 			myStmt.execute();
 		} finally {
 			// clean up JDBC objects
+			close(myConn, myStmt, null);
+		}
+	}
+
+	// disable or the user account
+	public void disableOrEnableUser(String theUserId) throws Exception {
+
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+		String sql = null;
+
+		try {
+			// convert user id to int
+			int userId = Integer.parseInt(theUserId);
+
+			// get connection to database
+			myConn = conn.getMySQLConnection();
+
+			// create sql to delete/disable user
+			sql = "update tbl_users SET status = CASE WHEN status = 0 THEN 1 WHEN status = 1 THEN 0 END Where user_id =?";
+
+			// prepare statement
+			myStmt = myConn.prepareStatement(sql);
+
+			// set params
+			myStmt.setInt(1, userId);
+
+			// execute sql statement
+			myStmt.execute();
+		} finally {
+			// clean up JDBC code
 			close(myConn, myStmt, null);
 		}
 	}
@@ -206,7 +287,7 @@ public class UserAccountDbUtil {
 			myConn = conn.getMySQLConnection();
 
 			// create sql to get selected user
-			String sql = "select * from tbl_user where user_id=?";
+			String sql = "select * from tbl_users where user_id=?";
 
 			// create prepared statement
 			myStmt = myConn.prepareStatement(sql);
@@ -231,6 +312,84 @@ public class UserAccountDbUtil {
 			}
 
 			return theUser;
+		} finally {
+			// clean up JDBC objects
+			close(myConn, myStmt, myRs);
+		}
+	}
+
+	// get user_id by user name and password
+	public int getUserId(String username, String password) throws Exception {
+
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+		ResultSet myRs = null;
+		int user_id = 0;
+
+		try {
+			// get connection to database
+			myConn = conn.getMySQLConnection();
+
+			// create sql to get selected user
+			String sql = "select user_id from tbl_users where username=? AND password=?";
+
+			// create prepared statement
+			myStmt = myConn.prepareStatement(sql);
+
+			// set params
+			myStmt.setString(1, username);
+			myStmt.setString(2, password);
+
+			// execute statement
+			myRs = myStmt.executeQuery();
+
+			// retrieve data from result set row
+			if (myRs.next()) {
+				user_id = myRs.getInt("user_id");
+			} else {
+				throw new Exception("Could not find user id for given username & password");
+			}
+
+			return user_id;
+
+		} finally {
+			// clean up JDBC objects
+			close(myConn, myStmt, myRs);
+		}
+	}
+
+	// get user_type by user id
+	public int getUserType(int user_id) throws Exception {
+
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+		ResultSet myRs = null;
+
+		try {
+			// get connection to database
+			myConn = conn.getMySQLConnection();
+
+			// create sql to get selected user
+			String sql = "select user_type from tbl_users where user_id=?";
+
+			// create prepared statement
+			myStmt = myConn.prepareStatement(sql);
+
+			// set params
+			myStmt.setInt(1, user_id);
+
+			// execute statement
+			myRs = myStmt.executeQuery();
+
+			// retrieve data from result set row
+			if (myRs.next()) {
+				user_id = myRs.getInt("user_type");
+			} else {
+				throw new Exception("Could not find user type for given user id");
+			}
+
+			return user_id;
+
 		} finally {
 			// clean up JDBC objects
 			close(myConn, myStmt, myRs);

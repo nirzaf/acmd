@@ -111,13 +111,13 @@ public class ownerControllerServlet extends HttpServlet {
 	private void loadOwner(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		// read owner id from form data
-		String theOwnerId = request.getParameter("owner_id");
+		int theOwnerId = Integer.parseInt(request.getParameter("owner_id"));
 
 		// get owner from database (db util)
 		Owner theOwner = ownerDbUtil.getOwner(theOwnerId);
 
 		// place owner in the request attribute
-		request.setAttribute("THE_STUDENT", theOwner);
+		request.setAttribute("THE_OWNER", theOwner);
 
 		// send to jsp page: update-owner-form.jsp
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/update-owner-form.jsp");

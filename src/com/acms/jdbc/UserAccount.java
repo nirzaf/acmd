@@ -7,6 +7,11 @@ public class UserAccount {
 	private int user_type;
 	private boolean status;
 	
+	public UserAccount() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public UserAccount(int user_id, String username, String password, int user_type, boolean status) {
 		this.user_id = user_id;
 		this.username = username;
@@ -14,14 +19,21 @@ public class UserAccount {
 		this.user_type = user_type;
 		this.status = status;
 	}
-	
-	public UserAccount(String username, String password, int user_type, boolean status){
+		
+	public UserAccount(String username, String password, int user_type, boolean status) {
+		super();
 		this.username = username;
 		this.password = password;
 		this.user_type = user_type;
 		this.status = status;
 	}
 
+	public UserAccount(String username, String password, int user_type){
+		this.username = username;
+		this.password = password;
+		this.user_type = user_type;
+	}
+	
 	public int getUser_id() {
 		return user_id;
 	}

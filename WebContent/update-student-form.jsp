@@ -16,7 +16,7 @@
 	</div>
 	
 	<div id="container">
-		<h3>Update Student</h3>
+		<h3>Student Profile</h3>
 		
 		<form action="studentControllerServlet" method="GET">
 		

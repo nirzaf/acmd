@@ -124,19 +124,14 @@ public class StudentDbUtil {
 		}
 	}
 
-	public Student getStudent(String studentId) throws Exception {
+	public Student getStudent(int studentId) throws Exception {
 
 		Student theStudent = null;
-
 		Connection myConn = null;
 		PreparedStatement myStmt = null;
 		ResultSet myRs = null;
-		int student_id;
 
 		try {
-			// convert student id to int
-			student_id = Integer.parseInt(studentId);
-
 			// get connection to database
 			myConn = conn.getMySQLConnection();
 
@@ -147,7 +142,7 @@ public class StudentDbUtil {
 			myStmt = myConn.prepareStatement(sql);
 
 			// set params
-			myStmt.setInt(1, student_id);
+			myStmt.setInt(1, studentId);
 
 			// execute statement
 			myRs = myStmt.executeQuery();
@@ -162,9 +157,9 @@ public class StudentDbUtil {
 				boolean isDeleted = myRs.getBoolean("isDeleted");
 
 				// use the studentId during construction
-				theStudent = new Student(student_id, firstName, lastName, address, email, telephone, isDeleted);
+				theStudent = new Student(studentId, firstName, lastName, address, email, telephone, isDeleted);
 			} else {
-				throw new Exception("Could not find student id: " + student_id);
+				throw new Exception("Could not find student id: " + studentId);
 			}
 
 			return theStudent;

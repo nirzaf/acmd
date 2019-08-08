@@ -120,19 +120,14 @@ public class OwnerDbUtil {
 		}
 	}
 
-	public Owner getOwner(String ownerId) throws Exception {
+	public Owner getOwner(int ownerId) throws Exception {
 
 		Owner theOwner = null;
-
 		Connection myConn = null;
 		PreparedStatement myStmt = null;
 		ResultSet myRs = null;
-		int owner_id;
 
 		try {
-			// convert owner id to int
-			owner_id = Integer.parseInt(ownerId);
-
 			// get connection to database
 			myConn = conn.getMySQLConnection();
 
@@ -143,7 +138,7 @@ public class OwnerDbUtil {
 			myStmt = myConn.prepareStatement(sql);
 
 			// set params
-			myStmt.setInt(1, owner_id);
+			myStmt.setInt(1, ownerId);
 
 			// execute statement
 			myRs = myStmt.executeQuery();
@@ -158,9 +153,9 @@ public class OwnerDbUtil {
 				boolean isDeleted = myRs.getBoolean("isDeleted");
 
 				// use the ownerId during construction
-				theOwner = new Owner(owner_id, firstName, lastName, address, email, telephone, isDeleted);
+				theOwner = new Owner(ownerId, firstName, lastName, address, email, telephone, isDeleted);
 			} else {
-				throw new Exception("Could not find owner id: " + owner_id);
+				throw new Exception("Could not find owner id: " + ownerId);
 			}
 
 			return theOwner;
