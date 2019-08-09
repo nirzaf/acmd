@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 
@@ -15,8 +16,6 @@
 			<h2>XYZ University</h2>
 		</div>
 	</div>
-
-
 	<h5 style="color: red"><%=(request.getAttribute("errMessage") == null) ? "" : "Successfully account registered"%></h5>
 
 	<h5 style="color: red">${Message}</h5>
@@ -63,7 +62,6 @@
 		</form>
 	</div>
 	<div style="clear: both;"></div>
-
 </body>
 
 </html>

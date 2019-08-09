@@ -439,7 +439,7 @@ public class UserAccountDbUtil {
 			}
 
 			if (myConn != null) {
-				myConn.close(); // doesn't really close it ... just puts back in connection pool
+				myConn.close();
 			}
 		} catch (Exception exc) {
 			exc.printStackTrace();

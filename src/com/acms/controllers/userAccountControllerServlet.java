@@ -2,7 +2,6 @@ package com.acms.controllers;
 
 import java.io.IOException;
 import java.util.List;
-import javax.annotation.Resource;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,6 +9,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.acms.jdbc.Owner;
 import com.acms.jdbc.Student;
@@ -89,7 +89,6 @@ public class userAccountControllerServlet extends HttpServlet {
 			case "LIST":
 				listUsers(request, response);
 				break;
-
 			case "DISABLE":
 				disableOrEnableUser(request, response);
 				break;
@@ -102,19 +101,12 @@ public class userAccountControllerServlet extends HttpServlet {
 			case "REGISTER":
 				registerUser(request, response);
 				break;
-
-			/*
-			 * case "ADD": addStudent(request, response); break;
-			 * 
-			 * case "LOAD": loadStudent(request, response); break;
-			 * 
-			 * case "UPDATE": updateStudent(request, response); break;
-			 * 
-			 * case "DELETE": deleteStudent(request, response); break;
-			 */
-
+			case "LOGOUT":
+				signOut(request, response);
+				break;
 			default:
 				loginPage(request, response);
+				break;
 			}
 		} catch (Exception ex) {
 			throw new ServletException(ex);
@@ -130,6 +122,19 @@ public class userAccountControllerServlet extends HttpServlet {
 	// method for sign up page controller route
 	private void signUpPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/sign-up-form.jsp");
+		dispatcher.forward(request, response);
+	}
+
+	// method for sign up page controller route
+	private void signOut(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				cookie.setMaxAge(0);
+			}
+		}
+		// response.sendRedirect("login-form.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/login-form.jsp");
 		dispatcher.forward(request, response);
 	}
 
@@ -152,25 +157,39 @@ public class userAccountControllerServlet extends HttpServlet {
 			userAccount.setUsername(username);
 			userAccount.setPassword(password);
 
-			// creating object for UserAccountDbUtil. This class contains main logic of the
-			// login part.
+			// creating object for UserAccountDbUtil. 
+			//This class contains main logic of the login part.
 			UserAccountDbUtil uaDbUtil = new UserAccountDbUtil(conn);
 
 			boolean validateAuth = uaDbUtil.Auth(userAccount);
 
 			if (validateAuth) { // If validateAuth boolean is true means username and password is correct
+				//destroying existing session variables 
+				request.getSession().invalidate();
+							
+				// getting user_id and user_type value of current logged in user 
 				int user_id = userAccountDbUtil.getUserId(username, password);
 				int user_type = userAccountDbUtil.getUserType(user_id);
+				
+				//converting user_id and user_type to string 
 				String userId = Integer.toString(user_id);
 				String userType = Integer.toString(user_type);
+								
+				//create new session 
+				HttpSession newSession = request.getSession(true);
+				newSession.setMaxInactiveInterval(1500);
+				newSession.setAttribute("username", username);
+				newSession.setAttribute("user_id", user_id);
+				newSession.setAttribute("user_type", userType);
+				
 				request.setAttribute("username", username);
 				request.setAttribute("user_id", user_id);
-				request.setAttribute("user_type", user_type);
+				request.setAttribute("user_type", userType);
 				Cookie loginCookie = new Cookie("user_id", userId);
-				//setting cookie to expiry in 60 mins
-				loginCookie.setMaxAge(60*60);
-				response.addCookie(loginCookie);				
-				System.out.println(user_id);
+				
+				// setting cookie to expiry in 60 mins
+				loginCookie.setMaxAge(60 * 60);
+				response.addCookie(loginCookie);
 				request.setAttribute("user_id", user_id);
 				if (user_id > 0 && user_type == 1) {
 
@@ -183,8 +202,7 @@ public class userAccountControllerServlet extends HttpServlet {
 					// send to jsp page: update-student-form.jsp
 					RequestDispatcher dispatcher = request.getRequestDispatcher("/update-student-form.jsp");
 					dispatcher.forward(request, response);
-				} 
-				else if (user_id > 0 && user_type == 2) {
+				} else if (user_id > 0 && user_type == 2) {
 
 					// get owner from database (db util)
 					theOwner = ownerDbUtil.getOwner(user_id);
@@ -195,13 +213,12 @@ public class userAccountControllerServlet extends HttpServlet {
 					// send to jsp page: update-owner-form.jsp
 					RequestDispatcher dispatcher = request.getRequestDispatcher("/update-owner-form.jsp");
 					dispatcher.forward(request, response);
-				}
-				else {
-					RequestDispatcher req = request.getRequestDispatcher("add-student-form.jsp");
+				} else {
+					//then it is the admin account
+					RequestDispatcher req = request.getRequestDispatcher("list-users-form.jsp");
 					req.forward(request, response);
 				}
 			} else { // else username and password is incorrect return to the login page
-				System.out.println(Message);
 				request.setAttribute("Message", Message);
 				RequestDispatcher req = request.getRequestDispatcher("login-form.jsp");
 				req.forward(request, response);

@@ -6,10 +6,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Resource;
-import javax.sql.DataSource;
-
 import com.acms.jdbc.Student;
 
 public class StudentDbUtil {
@@ -211,7 +207,7 @@ public class StudentDbUtil {
 			}
 
 			if (myConn != null) {
-				myConn.close(); // doesn't really close it ... just puts back in connection pool
+				myConn.close(); 
 			}
 		} catch (Exception exc) {
 			exc.printStackTrace();
