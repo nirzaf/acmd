@@ -114,7 +114,7 @@ public class userAccountControllerServlet extends HttpServlet {
 	}
 
 	// method for login page controller route
-	private void loginPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private void loginPage(HttpServletRequest request, HttpServletResponse response) throws Exception {	
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/login-form.jsp");
 		dispatcher.forward(request, response);
 	}
@@ -157,42 +157,42 @@ public class userAccountControllerServlet extends HttpServlet {
 			userAccount.setUsername(username);
 			userAccount.setPassword(password);
 
-			// creating object for UserAccountDbUtil. 
-			//This class contains main logic of the login part.
+			// creating object for UserAccountDbUtil.
+			// This class contains main logic of the login part.
 			UserAccountDbUtil uaDbUtil = new UserAccountDbUtil(conn);
 
 			boolean validateAuth = uaDbUtil.Auth(userAccount);
 
 			if (validateAuth) { // If validateAuth boolean is true means username and password is correct
-				//destroying existing session variables 
-				request.getSession().invalidate();
-							
-				// getting user_id and user_type value of current logged in user 
+				// getting user_id and user_type value of current logged in user
 				int user_id = userAccountDbUtil.getUserId(username, password);
 				int user_type = userAccountDbUtil.getUserType(user_id);
-				
-				//converting user_id and user_type to string 
+
+				// converting user_id and user_type to string
 				String userId = Integer.toString(user_id);
 				String userType = Integer.toString(user_type);
-								
-				//create new session 
+
+				// create new session
 				HttpSession newSession = request.getSession(true);
 				newSession.setMaxInactiveInterval(1500);
 				newSession.setAttribute("username", username);
 				newSession.setAttribute("user_id", user_id);
 				newSession.setAttribute("user_type", userType);
-				
+
 				request.setAttribute("username", username);
 				request.setAttribute("user_id", user_id);
 				request.setAttribute("user_type", userType);
 				Cookie loginCookie = new Cookie("user_id", userId);
-				
+
 				// setting cookie to expiry in 60 mins
 				loginCookie.setMaxAge(60 * 60);
 				response.addCookie(loginCookie);
 				request.setAttribute("user_id", user_id);
 				if (user_id > 0 && user_type == 1) {
 
+					boolean isExist = studentDbUtil.isStudentExist(user_id);
+					
+					if(isExist) {
 					// get student from database (db util)
 					theStudent = studentDbUtil.getStudent(user_id);
 
@@ -202,6 +202,29 @@ public class userAccountControllerServlet extends HttpServlet {
 					// send to jsp page: update-student-form.jsp
 					RequestDispatcher dispatcher = request.getRequestDispatcher("/update-student-form.jsp");
 					dispatcher.forward(request, response);
+					}else {
+						int student_id = user_id;
+						String firstName = " ";
+						String lastName = " ";
+						String address = " ";
+						String email = " ";
+						String telephone = " ";
+
+						// create a new student object
+						Student student = new Student(student_id, firstName, lastName, address, email, telephone);
+
+						// add the student to the database
+						studentDbUtil.addStudent(student);
+						
+						theStudent = studentDbUtil.getStudent(user_id);
+						
+						// place student in the request attribute
+						request.setAttribute("THE_STUDENT", theStudent);
+						
+						// send to jsp page: update-student-form.jsp
+						RequestDispatcher dispatcher = request.getRequestDispatcher("/update-student-form.jsp");
+						dispatcher.forward(request, response);						
+					}
 				} else if (user_id > 0 && user_type == 2) {
 
 					// get owner from database (db util)
@@ -214,7 +237,7 @@ public class userAccountControllerServlet extends HttpServlet {
 					RequestDispatcher dispatcher = request.getRequestDispatcher("/update-owner-form.jsp");
 					dispatcher.forward(request, response);
 				} else {
-					//then it is the admin account
+					// then it is the admin account
 					RequestDispatcher req = request.getRequestDispatcher("list-users-form.jsp");
 					req.forward(request, response);
 				}
@@ -314,7 +337,6 @@ public class userAccountControllerServlet extends HttpServlet {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		int user_type = Integer.parseInt(request.getParameter("user_type"));
-		boolean status = false;
 
 		// create a new user object
 		UserAccount theUser = new UserAccount(username, password, user_type);

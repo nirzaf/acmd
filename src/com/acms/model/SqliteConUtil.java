@@ -5,9 +5,10 @@ import java.sql.SQLException;
 
 public class SqliteConUtil {
 
-		public Connection getMySQLConnection() throws SQLException, ClassNotFoundException {
+	public Connection getMySQLConnection() throws SQLException, ClassNotFoundException {
 		Connection conn = null;
-		String url = "jdbc:sqlite:C:/sqlite/amts.db";
+		String url = "jdbc:sqlite:" + "C:/Users/mfazrin/eclipse-workspace/acmd/" + "amts1.db";
+		// String url = "jdbc:sqlite:C:/sqlite/amts.db";
 		Class.forName("org.sqlite.JDBC");
 		conn = DriverManager.getConnection(url);
 		return conn;

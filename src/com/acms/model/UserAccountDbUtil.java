@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Resource;
-import javax.sql.DataSource;
 import com.acms.jdbc.UserAccount;
 
 public class UserAccountDbUtil {
@@ -27,8 +25,8 @@ public class UserAccountDbUtil {
 		String Username = theUser.getUsername();
 		String Password = theUser.getPassword();
 
-		System.out.println("User entered username : " + Username);
-		System.out.println("User entered password : " + Password);
+		//System.out.println("User entered username : " + Username);
+		//System.out.println("User entered password : " + Password);
 
 		// Temporary Strings to hold username and password fetched from database
 		String dbUsername = "";
@@ -51,8 +49,8 @@ public class UserAccountDbUtil {
 				dbUsername = myRs.getString("username");
 				dbPassword = myRs.getString("password");
 
-				System.out.println("username retrived from db : " + dbUsername);
-				System.out.println("password retrived from db : " + dbPassword);
+				//System.out.println("username retrived from db : " + dbUsername);
+				//System.out.println("password retrived from db : " + dbPassword);
 
 				// Validate the username and password by matching with db username and password
 				if (dbUsername.equals(Username) && dbPassword.equals(Password)) {
@@ -68,47 +66,7 @@ public class UserAccountDbUtil {
 		}
 		return false;
 	}
-
-	public UserAccount findUser(String username, String password) throws Exception {
-		UserAccount theUser = null;
-		Connection myConn = null;
-		Statement myStmt = null;
-		ResultSet myRs = null;
-
-		try {
-
-			// get a connection
-			myConn = conn.getMySQLConnection();
-
-			// create sql statement
-			String sql = "select * from tbl_users where username=?, password=?, status=1";
-
-			// Prepare statement for db connection
-			myStmt = myConn.createStatement();
-
-			// execute query
-			myRs = myStmt.executeQuery(sql);
-
-			// process result set
-			if (myRs.next()) {
-				// retrieve data from result set row
-				int User_id = myRs.getInt("user_id");
-				String Username = username;
-				String Password = password;
-				int User_type = myRs.getInt("user_type");
-				boolean Status = myRs.getBoolean("status");
-
-				// create new user account object
-				theUser = new UserAccount(User_id, Username, Password, User_type, Status);
-			} else {
-				throw new Exception("Username or Password is Invalid! ");
-			}
-			return theUser;
-		} finally {
-			close(myConn, myStmt, myRs);
-		}
-	}
-
+	
 	// Return the list of users
 	public List<UserAccount> getUserAccounts() throws Exception {
 
@@ -240,35 +198,35 @@ public class UserAccountDbUtil {
 		}
 	}
 
-	// activate the user account
-	public void activateUser(String theUserId) throws Exception {
-
-		Connection myConn = null;
-		PreparedStatement myStmt = null;
-
-		try {
-			// convert user id to int
-			int userId = Integer.parseInt(theUserId);
-
-			// get db connection
-			myConn = conn.getMySQLConnection();
-
-			// create SQL update statement
-			String sql = "update tbl_users set status=1 where user_id=?";
-
-			// prepare statement
-			myStmt = myConn.prepareStatement(sql);
-
-			// set params
-			myStmt.setInt(1, userId);
-
-			// execute SQL statement
-			myStmt.execute();
-		} finally {
-			// clean up JDBC objects
-			close(myConn, myStmt, null);
-		}
-	}
+//	// activate the user account
+//	public void activateUser(String theUserId) throws Exception {
+//
+//		Connection myConn = null;
+//		PreparedStatement myStmt = null;
+//
+//		try {
+//			// convert user id to int
+//			int userId = Integer.parseInt(theUserId);
+//
+//			// get db connection
+//			myConn = conn.getMySQLConnection();
+//
+//			// create SQL update statement
+//			String sql = "update tbl_users set status=1 where user_id=?";
+//
+//			// prepare statement
+//			myStmt = myConn.prepareStatement(sql);
+//
+//			// set params
+//			myStmt.setInt(1, userId);
+//
+//			// execute SQL statement
+//			myStmt.execute();
+//		} finally {
+//			// clean up JDBC objects
+//			close(myConn, myStmt, null);
+//		}
+//	}
 
 	// get user details by user id
 	public UserAccount getUser(String userId) throws Exception {
