@@ -115,6 +115,9 @@ public class userAccountControllerServlet extends HttpServlet {
 
 	// method for login page controller route
 	private void loginPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		request.setAttribute("Path", conn.getDirectory());
+		
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/login-form.jsp");
 		dispatcher.forward(request, response);
 	}
