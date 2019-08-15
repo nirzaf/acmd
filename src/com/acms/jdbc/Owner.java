@@ -28,7 +28,6 @@ public class Owner {
 		this.address = address;
 		this.email = email;
 		this.telephone = telephone;
-		this.isDeleted = isDeleted;
 	}
 
 

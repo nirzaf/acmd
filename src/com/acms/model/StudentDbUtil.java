@@ -44,9 +44,9 @@ public class StudentDbUtil {
 				String address = myRs.getString("address");
 				String email = myRs.getString("email");
 				String telephone = myRs.getString("telephone");
-                boolean isDeleted = myRs.getBoolean("isDeleted");
+				boolean isDeleted = myRs.getBoolean("isDeleted");
 				// create new student object
-				Student tempStudent = new Student(id, firstName, lastName, address, email, telephone,isDeleted);
+				Student tempStudent = new Student(id, firstName, lastName, address, email, telephone, isDeleted);
 
 				// add it to the list of students
 				students.add(tempStudent);
@@ -68,17 +68,18 @@ public class StudentDbUtil {
 			myConn = conn.getMySQLConnection();
 
 			// create sql for insert
-			String sql = "insert into tbl_student " + "(first_name, last_name, address, email, telephone)"
-					+ "values (?, ?, ?, ?,?)";
+			String sql = "insert into tbl_student " + "(student_id, first_name, last_name, address, email, telephone)"
+					+ "values (?, ?, ?, ?, ?,?)";
 
 			myStmt = myConn.prepareStatement(sql);
 
 			// set the param values for the student
-			myStmt.setString(1, theStudent.getFirst_name());
-			myStmt.setString(2, theStudent.getLast_name());
-			myStmt.setString(3, theStudent.getAddress());
-			myStmt.setString(4, theStudent.getEmail());
-			myStmt.setString(5, theStudent.getTelephone());
+			myStmt.setInt(1, theStudent.getStudent_id());
+			myStmt.setString(2, theStudent.getFirst_name());
+			myStmt.setString(3, theStudent.getLast_name());
+			myStmt.setString(4, theStudent.getAddress());
+			myStmt.setString(5, theStudent.getEmail());
+			myStmt.setString(6, theStudent.getTelephone());
 
 			// execute sql insert
 			myStmt.execute();
@@ -117,6 +118,32 @@ public class StudentDbUtil {
 		} finally {
 			// clean up JDBC objects
 			close(myConn, myStmt, null);
+		}
+	}
+
+	public boolean isStudentExist(int studentId) throws Exception{
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+		ResultSet myRs = null;
+		// get connection to database
+		myConn = conn.getMySQLConnection();
+		// create sql to get selected student
+		String sql = "select * from tbl_student where student_id=?";
+
+		// create prepared statement
+		myStmt = myConn.prepareStatement(sql);
+
+		// set params
+		myStmt.setInt(1, studentId);
+
+		// execute statement
+		myRs = myStmt.executeQuery();
+		
+		// retrieve data from result set row
+		if (myRs.next()) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -207,7 +234,7 @@ public class StudentDbUtil {
 			}
 
 			if (myConn != null) {
-				myConn.close(); 
+				myConn.close();
 			}
 		} catch (Exception exc) {
 			exc.printStackTrace();

@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import com.acms.jdbc.Property;
 import com.acms.jdbc.Property_Type;
 
 public class PropertyTypeDbUtil {
@@ -56,7 +55,7 @@ public class PropertyTypeDbUtil {
 		}
 	}
 
-	public void addPropertyType(Property_Type theProperty_Type) throws Exception {
+	public void addProperty_Type(Property_Type theProperty_Type) throws Exception {
 		Connection myConn = null;
 		PreparedStatement myStmt = null;
 
@@ -109,7 +108,7 @@ public class PropertyTypeDbUtil {
 		}
 	}
 
-	public Property_Type getProperty(int type_id) throws Exception {
+	public Property_Type getProperty_Type(int type_id) throws Exception {
 
 		Property_Type theProperty_Type = null;
 		Connection myConn = null;
