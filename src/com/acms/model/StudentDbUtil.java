@@ -124,7 +124,7 @@ public class StudentDbUtil {
 	public boolean isStudentExist(int studentId) throws Exception{
 		Connection myConn = null;
 		PreparedStatement myStmt = null;
-		ResultSet myRs = null;
+		boolean myRs = false;
 		// get connection to database
 		myConn = conn.getMySQLConnection();
 		// create sql to get selected student
@@ -137,10 +137,10 @@ public class StudentDbUtil {
 		myStmt.setInt(1, studentId);
 
 		// execute statement
-		myRs = myStmt.executeQuery();
+		myRs = myStmt.execute();
 		
 		// retrieve data from result set row
-		if (myRs.next()) {
+		if (myRs) {
 			return true;
 		} else {
 			return false;

@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,24 +14,28 @@ import com.acms.jdbc.GetProperty;
 import com.acms.model.GetPropertyDbUtil;
 import com.acms.model.SqliteConUtil;
 
-           //getPropertyControllerServlet
-public class getPropertyControllerServlet {
+@WebServlet("/getPropertyControllerServlet")
+public class getPropertyControllerServlet extends HttpServlet {
+	
+	private static final long serialVersionUID = 1L;
+	
 	private GetPropertyDbUtil getPropertyDbUtil;
-	//private PropertyTypeDbUtil propertyTypeDbUtil;
-
-	//private DataSource dataSource;
 	
 	SqliteConUtil conn = new SqliteConUtil();
-
+	
+	@Override
 	public void init() throws ServletException {
+		super.init();
+		// TODO Auto-generated constructor stub
 		try {
 			getPropertyDbUtil = new GetPropertyDbUtil(conn);
 			//propertyTypeDbUtil = new PropertyTypeDbUtil(conn);
 		} catch (Exception ex) {
 			throw new ServletException(ex);
-		}
+		}		
 	}
-	
+
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
@@ -42,31 +48,10 @@ public class getPropertyControllerServlet {
 			}
 
 			// route to the appropriate method
-			switch (theCommand) {
-
-			case "LISTOFPROPERTIES":
-				listProperties(request, response);
-				break;
-
-			default:
-				listProperties(request, response);
-			}
+				
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}
 	}
 	
-	private void listProperties(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		// get property list from dbUtil
-		List<GetProperty> property = getPropertyDbUtil.getProperties();
-								
-		// add properties to the request
-		request.setAttribute("LISTOFPROPERTIES", property);
-
-		// send to the view page 
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/list-properties.jsp");
-		dispatcher.forward(request, response);
-	}
-
 }

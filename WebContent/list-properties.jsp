@@ -26,13 +26,14 @@
 			response.sendRedirect("userAccountControllerServlet");
 	%>
 
-
-	<input type="button" value="Add Property"  onclick="window.location.href='add-student-form.jsp'; 
-	return false;" class="add-student-button">	
+<form name="command">
+	<input type="button" value="Add Property" onclick="window.location.href='add-property.jsp';return false;" 
+	class="add-student-button"> 	
+</form>
 	
-<form name="searchForm" action="getPropertyControllerServlet" method="GET">
+<form name="searchForm" action="propertyController" method="GET">
 <input type="text" name="search" class="form-control" placeholder="Search Properties">
-<button type="submit" name="submit" class="add-student-button">Search</button>
+<button type="submit" value="search" class="add-student-button">Search</button>
 	<div id="container">		
 		<div id="content">
 			<table>
@@ -45,7 +46,7 @@
 					<th>Currently Rented By</th>
 					<th>Charge</th>
 				</tr>	
-				<q:forEach var="tempProperty"  items="${LISTOFPROPERTIES}" >				
+				<q:forEach var="tempProperty"  items="${PROPERTY_LIST}" >				
 					<tr>
 						<td> ${tempProperty.property_type} </td>
 						<td> ${tempProperty.address} </td>

@@ -42,7 +42,7 @@ body {
 	<div>
 		<div class="topnav">
 			<a href="#">My Profile</a> 
-			<a href="getPropertyControllerServlet">Properties</a> 
+			<a href="propertyController">Properties</a> 
 			<a href="#contact">Payment</a> 
 			<a href="#about">About</a>
 			<a href="userAccountControllerServlet">Logout</a>

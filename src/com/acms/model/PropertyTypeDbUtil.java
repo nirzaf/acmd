@@ -28,7 +28,7 @@ public class PropertyTypeDbUtil {
 			myConn = conn.getMySQLConnection();
 
 			// create sql statement
-			String sql = "select * from `tbl_property_types` where `isDeleted` = 1 ";
+			String sql = "select type_id, type_name, isDeleted from `tbl_property_types` where `isDeleted` = 1 ";
 
 			myStmt = myConn.createStatement();
 
@@ -69,7 +69,7 @@ public class PropertyTypeDbUtil {
 			myStmt = myConn.prepareStatement(sql);
 
 			// set the param values for the property type
-			myStmt.setString(1, theProperty_Type.getPropery_name());
+			myStmt.setString(1, theProperty_Type.getProperty_name());
 
 			// execute sql insert
 			myStmt.execute();
@@ -97,7 +97,7 @@ public class PropertyTypeDbUtil {
 			myStmt = myConn.prepareStatement(sql);
 
 			// set params
-			myStmt.setString(1, theProperty_Type.getPropery_name());
+			myStmt.setString(1, theProperty_Type.getProperty_name());
 			myStmt.setInt(2, theProperty_Type.getProperty_id());
 
 			// execute SQL statement

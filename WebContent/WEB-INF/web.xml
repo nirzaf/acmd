@@ -3,16 +3,5 @@
   <display-name>Accommodation Management System</display-name>
   <welcome-file-list>
     <welcome-file>login-form.jsp</welcome-file>
-    <welcome-file>list-property.jsp</welcome-file>
-    <welcome-file>list-owners.jsp</welcome-file>
-    <welcome-file>list-students.jsp</welcome-file>
-    <welcome-file>list-owners.jsp</welcome-file>
-    <welcome-file>update-owner.jsp</welcome-file>
   </welcome-file-list>
-  
-   <servlet-mapping>
-    <servlet-name>studentTypeController</servlet-name>
-    <url-pattern>/studentTypeController</url-pattern>
-  </servlet-mapping>
-  
 </web-app>

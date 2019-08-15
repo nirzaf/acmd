@@ -2,7 +2,7 @@ package com.acms.jdbc;
 
 public class Property_Type {
 	private int property_id;
-	private String propery_name;
+	private String property_name;
 	private boolean isDeleted;
 	
 	public Property_Type() {
@@ -10,13 +10,13 @@ public class Property_Type {
 	}
 	
 	public Property_Type(String propery_name) {
-		this.propery_name = propery_name;
+		this.property_name = propery_name;
 	}
 
 	public Property_Type(int property_id, String propery_name, boolean isDeleted) {
 		super();
 		this.property_id = property_id;
-		this.propery_name = propery_name;
+		this.property_name = propery_name;
 		this.isDeleted = isDeleted;
 	}
 
@@ -28,12 +28,12 @@ public class Property_Type {
 		this.property_id = property_id;
 	}
 
-	public String getPropery_name() {
-		return propery_name;
+	public String getProperty_name() {
+		return property_name;
 	}
 
-	public void setPropery_name(String propery_name) {
-		this.propery_name = propery_name;
+	public void setProperty_name(String propery_name) {
+		this.property_name = propery_name;
 	}
 
 	public boolean isDeleted() {
