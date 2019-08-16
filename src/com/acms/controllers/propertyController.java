@@ -95,10 +95,18 @@ public class propertyController extends HttpServlet {
 
 		// read info from form data
 		try {
-		System.out.println("You are here now :) (:");
-		System.out.println(" property_type : " + request.getParameter("property_type") + "  ||address: " + request.getParameter("address") + "  ||suitable_for : " + request.getParameter("suitable") + "  ||is_available : " + request.getParameter("is_available") + "  ||owner_id : " + request.getParameter("owner_id") + "  ||rented_by : " + request.getParameter("rented_by") + "  ||charge: " + request.getParameter("charge"));
-		int property_type = Integer.parseInt(request.getParameter("property_type").trim());
+			
 		String address = request.getParameter("address");
+		System.out.println(" property_type : " + request.getParameter("property_type") 
+		+ "  ||address: " +  address + "  ||suitable_for : " 
+		+ request.getParameter("suitable") + "  ||is_available : " 
+		+ request.getParameter("is_available") + "  ||owner_id : " 
+		+ request.getParameter("owner_id") + "  ||rented_by : " 
+		+ request.getParameter("rented_by") + "  ||charge: " 
+		+ request.getParameter("charge"));
+		
+		int property_type = Integer.parseInt(request.getParameter("property_type").trim());
+		
 		int suitable_for = Integer.parseInt(request.getParameter("suitable").trim());
 		int is_available = Integer.parseInt(request.getParameter("is_available").trim());
 		int owner_id = Integer.parseInt(request.getParameter("owner_id").trim());
@@ -106,13 +114,21 @@ public class propertyController extends HttpServlet {
 		float charge = Float.parseFloat(request.getParameter("charge").trim());
 		boolean isDeleted = true;
 			
-		Property property = new Property(property_type, address, suitable_for, is_available, owner_id, rented_by,
+		Property theProperty = new Property(property_type, address, suitable_for, is_available, owner_id, rented_by,
 				charge, isDeleted);
 		
-			dbUtil.addProperty(property);
+		System.out.println(" property_type : " + theProperty.getProperty_type() 
+		+ "  ||address: " +  theProperty.getAddress() 
+		+ "  ||suitable_for : " + theProperty.getSuitable_for() 
+		+ "  ||is_available : " + theProperty.getIs_available() 
+		+ "  ||owner_id : " + theProperty.getOwner() 
+		+ "  ||rented_by : " + theProperty.getRented_by() 
+		+ "  ||charge: " + theProperty.getCharge());
+		
+			dbUtil.addProperty(theProperty);
 			
 			listProperties(request, response);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

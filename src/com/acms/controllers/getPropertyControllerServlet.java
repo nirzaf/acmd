@@ -23,13 +23,11 @@ public class getPropertyControllerServlet extends HttpServlet {
 	
 	SqliteConUtil conn = new SqliteConUtil();
 	
-	@Override
 	public void init() throws ServletException {
 		super.init();
 		// TODO Auto-generated constructor stub
 		try {
 			getPropertyDbUtil = new GetPropertyDbUtil(conn);
-			//propertyTypeDbUtil = new PropertyTypeDbUtil(conn);
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}		

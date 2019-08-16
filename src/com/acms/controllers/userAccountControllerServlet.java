@@ -50,7 +50,7 @@ public class userAccountControllerServlet extends HttpServlet {
 		try {
 			// read the "command" parameter
 			String theCommand = request.getParameter("command");
-			System.out.println(theCommand);
+			//System.out.println(theCommand);
 			// if the command is missing, then default to login user
 			if (theCommand == null) {
 				theCommand = "LOGIN";
@@ -65,6 +65,10 @@ public class userAccountControllerServlet extends HttpServlet {
 			case "REGISTER":
 				registerUser(request, response);
 				break;
+
+			default:
+				userLogin(request, response);
+				break;
 			}
 		} catch (Exception ex) {
 			throw new ServletException(ex);
@@ -77,7 +81,7 @@ public class userAccountControllerServlet extends HttpServlet {
 		try {
 			// read the "command" parameter
 			String theCommand = request.getParameter("command");
-			System.out.println(theCommand);
+			//System.out.println(theCommand);
 			// if the command is missing, then default to listing users
 			if (theCommand == null) {
 				theCommand = "LOGINPAGE";
@@ -98,9 +102,6 @@ public class userAccountControllerServlet extends HttpServlet {
 			case "SIGNUP":
 				signUpPage(request, response);
 				break;
-			case "REGISTER":
-				registerUser(request, response);
-				break;
 			case "LOGOUT":
 				signOut(request, response);
 				break;
@@ -114,7 +115,7 @@ public class userAccountControllerServlet extends HttpServlet {
 	}
 
 	// method for login page controller route
-	private void loginPage(HttpServletRequest request, HttpServletResponse response) throws Exception {	
+	private void loginPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/login-form.jsp");
 		dispatcher.forward(request, response);
 	}
@@ -191,39 +192,39 @@ public class userAccountControllerServlet extends HttpServlet {
 				if (user_id > 0 && user_type == 1) {
 
 					boolean isExist = studentDbUtil.isStudentExist(user_id);
-					
-					if(isExist) {
-					// get student from database (db util)
-					theStudent = studentDbUtil.getStudent(user_id);
 
-					// place student in the request attribute
-					request.setAttribute("THE_STUDENT", theStudent);
+					if (isExist) {
+						// get student from database (db util)
+						theStudent = studentDbUtil.getStudent(user_id);
 
-					// send to jsp page: update-student-form.jsp
-					RequestDispatcher dispatcher = request.getRequestDispatcher("/update-student-form.jsp");
-					dispatcher.forward(request, response);
-					}else {
+						// place student in the request attribute
+						request.setAttribute("THE_STUDENT", theStudent);
+
+						// send to jsp page: update-student-form.jsp
+						RequestDispatcher dispatcher = request.getRequestDispatcher("/update-student-form.jsp");
+						dispatcher.forward(request, response);
+					} else {
 						int student_id = user_id;
-						String firstName = " ";
-						String lastName = " ";
-						String address = " ";
-						String email = " ";
-						String telephone = " ";
+						String firstName = "First Name";
+						String lastName = "Last Name ";
+						String address = "Address ";
+						String email = "Email";
+						String telephone = "Telephone";
 
 						// create a new student object
 						Student student = new Student(student_id, firstName, lastName, address, email, telephone);
 
 						// add the student to the database
 						studentDbUtil.addStudent(student);
-						
+
 						theStudent = studentDbUtil.getStudent(user_id);
-						
+
 						// place student in the request attribute
 						request.setAttribute("THE_STUDENT", theStudent);
-						
+
 						// send to jsp page: update-student-form.jsp
 						RequestDispatcher dispatcher = request.getRequestDispatcher("/update-student-form.jsp");
-						dispatcher.forward(request, response);						
+						dispatcher.forward(request, response);
 					}
 				} else if (user_id > 0 && user_type == 2) {
 

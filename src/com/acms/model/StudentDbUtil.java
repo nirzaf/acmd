@@ -69,7 +69,7 @@ public class StudentDbUtil {
 
 			// create sql for insert
 			String sql = "insert into tbl_student " + "(student_id, first_name, last_name, address, email, telephone)"
-					+ "values (?, ?, ?, ?, ?,?)";
+					+ "values (?, ?, ?, ?, ?, ?)";
 
 			myStmt = myConn.prepareStatement(sql);
 

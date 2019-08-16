@@ -1,4 +1,5 @@
 package com.acms.model;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,17 +25,17 @@ public class PropertyDbUtil {
 			// get db connection
 			myConn = conn.getMySQLConnection();
 
-			System.out.println(" in Property Db Util property_type : " + theProperty.getProperty_type() 
-			+ "  ||address: " + theProperty.getAddress() + "  ||suitable_for : " + theProperty.getSuitable_for() 
-			+ "  ||is_available : " + theProperty.getSuitable_for() + "  ||owner_id : " + theProperty.getOwner() 
-			+ "  ||rented_by : " + theProperty.getRented_by() + "  ||charge: " + theProperty.getCharge());
-			
-			String sql = "INSERT INTO tbl_property "
-					+ "(property_type, address, suitable_for, is_available, owner, rented_by, charge, isDeleted) " 
-					+ " VALUES (?,?,?,?,?,?,?,?)";
-						
-			myStmt = myConn.prepareStatement(sql);
+			System.out.println(" in Property Db Util property_type : " + theProperty.getProperty_type()
+					+ "  ||address: " + theProperty.getAddress() + "  ||suitable_for : " + theProperty.getSuitable_for()
+					+ "  ||is_available : " + theProperty.getSuitable_for() + "  ||owner_id : " + theProperty.getOwner()
+					+ "  ||rented_by : " + theProperty.getRented_by() + "  ||charge: " + theProperty.getCharge());
 
+			String sql = "INSERT INTO tbl_property "
+					+ "(property_type, address, suitable_for, is_available, owner, rented_by, charge, isDeleted) "
+					+ " VALUES (?,?,?,?,?,?,?,?)";
+
+			myStmt = myConn.prepareStatement(sql);
+			try {
 			// set the param values for the owner
 			myStmt.setInt(1, theProperty.getProperty_type());
 			myStmt.setString(2, theProperty.getAddress());
@@ -45,12 +46,13 @@ public class PropertyDbUtil {
 			myStmt.setFloat(7, theProperty.getCharge());
 			myStmt.setBoolean(8, theProperty.isDeleted());
 
-			try {
-				myStmt.execute();
-			} catch (SQLException e) {
-			    e.printStackTrace();
+			// execute sql insert
+			myStmt.execute();
+			}catch(Exception ex)
+			{
+				ex.printStackTrace();
 			}
-			
+
 		} finally {
 			// clean up JDBC objects
 			close(myConn, myStmt, null);
@@ -129,7 +131,7 @@ public class PropertyDbUtil {
 				// use the property during construction
 				theProperty = new Property(property_id, property_type, address, suitable_for, is_available, owner,
 						rented_by, charge, isDeleted);
-			} 
+			}
 
 			return theProperty;
 		} finally {
@@ -184,7 +186,7 @@ public class PropertyDbUtil {
 				Property theProperty = new Property(property_type, address, suitable_for, is_available, owner,
 						rented_by, charge);
 				properties.add(theProperty);
-			} 
+			}
 			return properties;
 		} finally {
 			// clean up JDBC objects

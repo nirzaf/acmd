@@ -7,7 +7,7 @@ public class SqliteConUtil {
 
 	public Connection getMySQLConnection() throws SQLException, ClassNotFoundException {
 		Connection conn = null;
-		String url = "jdbc:sqlite:" + "C:/Users/mfazrin/eclipse-workspace/acmd/" + "am.db";
+		String url = "jdbc:sqlite:" + "C:/Users/mfazrin/eclipse-workspace/acmd/" + "ams.db";
 		// String url = "jdbc:sqlite:C:/sqlite/amts.db";
 		Class.forName("org.sqlite.JDBC");
 		conn = DriverManager.getConnection(url);
