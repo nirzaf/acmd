@@ -38,13 +38,15 @@ public class GetPropertyDbUtil {
 						+ "tbl_property.address AS address, tbl_property.suitable_for AS suitable_for, "
 						+ "CASE (tbl_property.is_available) "
 						+ "WHEN '1' THEN 'available' ELSE 'occupied' END AS availability, "
-						+ "tbl_owner.first_name AS owner, " + "CASE tbl_property.rented_by "
+						+ "tbl_owner.first_name AS owner, " 
+						+ "CASE tbl_property.rented_by "
 						+ "WHEN '0' THEN 'none' ELSE tbl_student.first_name END as rented_by, "
-						+ "tbl_property.charge AS rent " + "FROM tbl_property INNER JOIN tbl_property_types ON "
+						+ "tbl_property.charge AS rent " 
+						+ "FROM tbl_property INNER JOIN tbl_property_types ON "
 						+ "tbl_property_types.type_id = tbl_property.property_type "
 						+ "INNER JOIN tbl_owner ON  tbl_property.owner = tbl_owner.owner_id "
 						+ "LEFT JOIN tbl_student ON tbl_property.rented_by = tbl_student.student_id "
-						+ "WHERE tbl_property.isDeleted = 1 AND tbl_property.status = 1";
+						+ "WHERE tbl_property.isDeleted = 1";
 
 				myStmt = myConn.prepareStatement(sql);
 
@@ -75,7 +77,7 @@ public class GetPropertyDbUtil {
 				sql = "SELECT tbl_property.property_id AS property_id, " + "tbl_property_types.type_name AS type_name, "
 						+ "tbl_property.address AS address, tbl_property.suitable_for AS suitable_for, "
 						+ "CASE (tbl_property.is_available) "
-						+ "WHEN '1' THEN 'available' ELSE 'Occupied' END AS availability, "
+						+ "WHEN '1' THEN 'available' ELSE 'occupied' END AS availability, "
 						+ "tbl_owner.first_name AS owner, " + "CASE tbl_property.rented_by "
 						+ "WHEN '0' THEN 'none' ELSE tbl_student.first_name END as rented_by, "
 						+ "tbl_property.charge AS rent " + "FROM tbl_property INNER JOIN tbl_property_types ON "
@@ -133,7 +135,7 @@ public class GetPropertyDbUtil {
 				String sql = "SELECT tbl_property.property_id AS property_id, " 
 						+ "tbl_property_types.type_name AS type_name, "
 						+ "tbl_property.address AS address, tbl_property.suitable_for AS suitable_for, "
-						+ "CASE (tbl_property.is_available) WHEN '1' THEN 'available' ELSE 'Occupied' END AS availability, "
+						+ "CASE (tbl_property.is_available) WHEN '1' THEN 'available' ELSE 'occupied' END AS availability, "
 						+ "tbl_property.owner AS owner_id, "
 						+ "tbl_owner.first_name AS owner, " 
 						+ "CASE tbl_property.rented_by WHEN '0' THEN 'none' ELSE tbl_student.first_name END AS rented_by, "

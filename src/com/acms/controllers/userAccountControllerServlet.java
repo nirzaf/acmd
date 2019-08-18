@@ -54,7 +54,6 @@ public class userAccountControllerServlet extends HttpServlet {
 		try {
 			// read the "command" parameter
 			String theCommand = request.getParameter("command");
-			//System.out.println(theCommand);
 			// if the command is missing, then default to login user
 			if (theCommand == null) {
 				theCommand = "LOGIN";
@@ -85,7 +84,6 @@ public class userAccountControllerServlet extends HttpServlet {
 		try {
 			// read the "command" parameter
 			String theCommand = request.getParameter("command");
-			//System.out.println(theCommand);
 			// if the command is missing, then default to listing users
 			if (theCommand == null) {
 				theCommand = "LOGINPAGE";
@@ -206,7 +204,6 @@ public class userAccountControllerServlet extends HttpServlet {
 			
 				if (user_id > 0 && user_type == 1) {
 					boolean isExist = studentDbUtil.isStudentExist(user_id);
-					System.out.println(isExist);
 
 					if (!isExist) {
 						int student_id = user_id;

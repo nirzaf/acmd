@@ -12,18 +12,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import com.acms.jdbc.GetRequest;
 import com.acms.jdbc.Student;
 import com.acms.model.StudentDbUtil;
+import com.acms.model.ViewReqDbUtil;
 
 @WebServlet("/studentControllerServlet")
 public class studentControllerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private StudentDbUtil studentDbUtil;
-	private userAccountControllerServlet userAccount;
+	private ViewReqDbUtil viewRequest;
 	@Resource(name="jdbc/ams")
 	private DataSource ds;
-
+	
 	@Override
 	public void init() throws ServletException {
 		// TODO Auto-generated method stub
@@ -31,7 +33,7 @@ public class studentControllerServlet extends HttpServlet {
 
 		try {
 			studentDbUtil = new StudentDbUtil(ds);
-			userAccount = new userAccountControllerServlet();
+			viewRequest = new ViewReqDbUtil(ds);
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}
@@ -70,6 +72,9 @@ public class studentControllerServlet extends HttpServlet {
 			case "DELETE":
 				deleteStudent(request, response);
 				break;
+				
+			case "DEL":
+				deleteRequest(request, response);
 
 			default:
 				listStudents(request, response);
@@ -154,6 +159,33 @@ public class studentControllerServlet extends HttpServlet {
 
 		// send to the view page (jsp)
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/list-students.jsp");
+		dispatcher.forward(request, response);
+	}
+	
+	private void deleteRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		// read id from form data
+		int request_id = Integer.parseInt(request.getParameter("request_id"));
+
+		// delete database
+		viewRequest.deleteRequest(request_id);
+
+		// send them back to my requests page
+		myRequestList(request, response);
+	}
+	
+	private void myRequestList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		int student_id = Integer.parseInt(request.getParameter("student_id"));
+
+		// get list from dbUtil
+		List<GetRequest> getRequest = viewRequest.getMyRequest(student_id);
+
+		// add the requests to REQ_LIST
+		request.setAttribute("MYREQ_LIST", getRequest);
+
+		// send to the view page (jsp)
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/my-requests.jsp");
 		dispatcher.forward(request, response);
 	}
 }

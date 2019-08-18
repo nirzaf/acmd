@@ -182,7 +182,7 @@ public class OwnerDbUtil {
 			// get connection to database
 			myConn = ds.getConnection();
 			// create sql to get selected student
-			String sql = "select first_name from tbl_owners where owner_id=?";
+			String sql = "select first_name from tbl_owner where owner_id=?";
 
 			// create prepared statement
 			myStmt = myConn.prepareStatement(sql);
@@ -195,7 +195,6 @@ public class OwnerDbUtil {
 
 			// retrieve data from result set row	
 			while (myRs.next()) {
-				System.out.println(" Your in If condition true ");
 				return true;
 			} 
 			return false;

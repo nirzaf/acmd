@@ -31,11 +31,6 @@ public class UserAccountDbUtil {
 		String Username = theUser.getUsername();
 		String Password = theUser.getPassword();
 
-		/*
-		 * System.out.println("User entered username : " + Username);
-		 * System.out.println("User entered password : " + Password);
-		 */
-
 		// Temporary Strings to hold username and password fetched from database
 		String dbUsername = "";
 		String dbPassword = "";
@@ -57,14 +52,8 @@ public class UserAccountDbUtil {
 				dbUsername = myRs.getString("username");
 				dbPassword = myRs.getString("password");
 
-				/*
-				 * System.out.println("username retrieved from db : " + dbUsername);
-				 * System.out.println("password retrieved from db : " + dbPassword);
-				 */
-
 				// Validate the username and password by matching with db username and password
 				if (dbUsername.equals(Username) && dbPassword.equals(Password)) {
-					System.out.println("Username and Password Validated");
 					return true;
 				}
 			}
