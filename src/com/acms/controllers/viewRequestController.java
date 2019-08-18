@@ -12,15 +12,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import com.acms.jdbc.GetRequest;
 import com.acms.jdbc.Student;
 import com.acms.model.StudentDbUtil;
+import com.acms.model.ViewReqDbUtil;
 
 @WebServlet("/viewRequestController")
 public class viewRequestController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private StudentDbUtil studentDbUtil;
-	private userAccountControllerServlet userAccount;
+	private ViewReqDbUtil viewRequest;
+	
 	@Resource(name="jdbc/ams")
 	private DataSource ds;
 
@@ -31,7 +34,7 @@ public class viewRequestController extends HttpServlet {
 
 		try {
 			studentDbUtil = new StudentDbUtil(ds);
-			userAccount = new userAccountControllerServlet();
+			viewRequest = new ViewReqDbUtil(ds);
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}
@@ -52,43 +55,15 @@ public class viewRequestController extends HttpServlet {
 			switch (theCommand) {
 
 			case "LIST":
-				listStudents(request, response);
-				break;
-
-			case "LOAD":
-				loadStudent(request, response);
-				break;
-
-			case "PROFILE":
-				loadProfile(request, response);
-				break;
-				
-			case "UPDATE":
-				updateStudent(request, response);
-				break;
-
-			case "DELETE":
-				deleteStudent(request, response);
+				listRequest(request, response);
 				break;
 
 			default:
-				listStudents(request, response);
+				listRequest(request, response);
 			}
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}
-	}
-
-	private void deleteStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		// read student id from form data
-		String theStudentId = request.getParameter("student_id");
-
-		// delete student from database
-		studentDbUtil.deleteStudent(theStudentId);
-
-		// send them back to "list students" page
-		listStudents(request, response);
 	}
 
 	private void updateStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -145,15 +120,19 @@ public class viewRequestController extends HttpServlet {
 		dispatcher.forward(request, response);
 	}
 
-	private void listStudents(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// get students list from dbUtil
-		List<Student> student = studentDbUtil.getStudents();
+	private void listRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		int ownerId = Integer.parseInt(request.getParameter("owner_id"));
+		System.out.println(ownerId);
+		
+		// get list from dbUtil
+		List<GetRequest> getRequest = viewRequest.getRequest(ownerId);
 
-		// add students to the request
-		request.setAttribute("STUDENT_LIST", student);
+		// add the requests to REQ_LIST
+		request.setAttribute("REQ_LIST", getRequest);
 
 		// send to the view page (jsp)
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/list-students.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/request-list.jsp");
 		dispatcher.forward(request, response);
 	}
 }

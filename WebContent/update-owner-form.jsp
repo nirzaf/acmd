@@ -12,7 +12,7 @@
 	<%@include file="owners-navigation.jsp"%>
 	
 	<div id="container">
-		<h3>Owner's Profile</h3>
+		<h3>Update ${THE_OWNER.first_name}'s Profile</h3>
 		
 		<form action="ownerControllerServlet" method="GET">
 		
@@ -62,10 +62,6 @@
 		</form>
 		
 		<div style="clear: both;"></div>
-		
-		<p>
-			<a href="ownerControllerServlet">Back to List</a>
-		</p>
 	</div>
 </body>
 </html>

@@ -21,6 +21,7 @@ import com.acms.jdbc.ViewRequest;
 import com.acms.model.GetPropertyDbUtil;
 import com.acms.model.PropertyDbUtil;
 import com.acms.model.PropertyTypeDbUtil;
+import com.acms.model.ViewReqDbUtil;
 import com.acms.model.ConUtil;
 
 @WebServlet("/propertyController")
@@ -33,6 +34,7 @@ public class propertyController extends HttpServlet {
 	private GetPropertyDbUtil propertyDbUtil;
 	private PropertyTypeDbUtil propertyTypeDbUtil;
 	private PropertyDbUtil dbUtil;
+	private ViewReqDbUtil viewReqDbUtil;
 
 	@Override
 	public void init() throws ServletException {
@@ -43,6 +45,7 @@ public class propertyController extends HttpServlet {
 			propertyDbUtil = new GetPropertyDbUtil(ds);
 			propertyTypeDbUtil = new PropertyTypeDbUtil(ds);
 			dbUtil = new PropertyDbUtil(ds);
+			viewReqDbUtil = new ViewReqDbUtil(ds);
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}
@@ -73,13 +76,17 @@ public class propertyController extends HttpServlet {
 			case "VIEW":
 				viewRequest(request, response);
 				break;
-				
-			case "MYLIST" :
+
+			case "MYLIST":
 				myProperties(request, response);
 				break;
 
 			case "LIST_OF_TYPES":
 				listProperty_types(request, response);
+				break;
+				
+			case "PAY":
+				makePayment(request, response);
 				break;
 
 			case "ADD":
@@ -105,26 +112,26 @@ public class propertyController extends HttpServlet {
 		int user_id = Integer.parseInt(request.getParameter("user_id").trim());
 
 		ViewRequest viewRequest = new ViewRequest(user_id, property_id, currentDate, viewDate);
-		System.out.println(user_id +"  "+ property_id +"  "+ currentDate +"  "+ viewDate);
+		System.out.println(user_id + "  " + property_id + "  " + currentDate + "  " + viewDate);
 
 		// add to database
-		dbUtil.addViewRequest(viewRequest);
+		viewReqDbUtil.addViewRequest(viewRequest);
 
 		// send them back to "property list" page
 		listProperties(request, response);
 	}
 
-	/*
-	 * private void deleteStudent(HttpServletRequest request, HttpServletResponse
-	 * response) throws Exception {
-	 * 
-	 * // read student id from form data String theStudentId =
-	 * request.getParameter("student_id");
-	 * 
-	 * // delete student from database studentDbUtil.deleteStudent(theStudentId);
-	 * 
-	 * // send them back to "list students" page listStudents(request, response); }
-	 */
+	private void makePayment(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		// read id from form data
+		int property_id = Integer.parseInt(request.getParameter("property_id"));
+
+		// update payment
+		dbUtil.updatePayment(property_id);
+
+		// send them back to my Properties page
+		myProperties(request, response);
+	}
 
 	private void addProperty(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -144,7 +151,7 @@ public class propertyController extends HttpServlet {
 
 			dbUtil.addProperty(theProperty);
 
-			listProperties(request, response);
+			myProperties(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -165,7 +172,6 @@ public class propertyController extends HttpServlet {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/update-property-form.jsp");
 
 		dispatcher.forward(request, response);
-
 	}
 
 	private void listProperty_types(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -179,21 +185,21 @@ public class propertyController extends HttpServlet {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/add-property.jsp");
 		dispatcher.forward(request, response);
 	}
-	
+
 	private void myProperties(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// get list from dbUtil
 		String user_id = request.getParameter("owner_id");
 		List<GetProperty> property;
-		
+
 		property = propertyDbUtil.getMyProperties(Integer.parseInt(user_id));
-		
+
 		System.out.println("Your user id now :  " + user_id);
-			
+
 		// add to the request
-		request.setAttribute("MY_LIST", property);
+		request.setAttribute("PROPERTY", property);
 
 		// send to the view page (jsp)
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/list-properties.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/my-properties.jsp");
 		dispatcher.forward(request, response);
 	}
 

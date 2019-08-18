@@ -11,20 +11,6 @@
 <body>
 	 <%@include file="student-navigation.jsp" %>
 
-	<!-- conditional display field -->
-	<%
-		if (user_type == "2") {
-	%>
-	<form name="command">
-		<input type="button" value="Add Owner"
-			onclick="window.location.href='add-owner-form.jsp'; return false;"
-			class="add-student-button">
-	</form>
-
-	<%
-		}
-	%>
-
 	<form name="searchForm" action="propertyController" method="GET">
 		<input type="text" name="search" class="form-control"
 			placeholder="Search Properties">

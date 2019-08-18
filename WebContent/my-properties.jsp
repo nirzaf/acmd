@@ -4,30 +4,24 @@
 <html>
 
 <head>
-<title>My Properties</title>
+<title>Properties</title>
 <link type="text/css" rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-	 <%@include file="owners-navigation.jsp" %>
-
-	<h3>My Properties</h3>
+	<%@include file="owners-navigation.jsp"%>
 
 	<!-- conditional display field -->
-	<%
-		if (user_type == "2") {
-	%>
 	<form name="command">
-		<input type="button" value="Add Owner"
-			onclick="window.location.href='add-owner-form.jsp'; return false;"
+		<input type="button" value="Add Property"
+			onclick="window.location.href='add-property.jsp'; return false;"
 			class="add-student-button">
 	</form>
 
-	<%
-		}
-	%>
-
-	<form name="myproperties" action="propertyController" method="GET">
+	<form name="searchForm" action="propertyController" method="GET">
+		<!-- 		<input type="text" name="search" class="form-control"
+			placeholder="Search Properties">
+		<button type="submit" value="search" class="add-student-button">Search</button> -->
 		<div id="container">
 			<div id="content">
 				<table>
@@ -36,28 +30,26 @@
 						<th>Address</th>
 						<th>Suitable For</th>
 						<th>Availability</th>
-						<th>Owner</th>
 						<th>Currently Rented By</th>
 						<th>Charge</th>
-						<th>View Request</th>
+						<th>Payment</th>
 					</tr>
-					<q:forEach var="myProperty" items="${MY_LIST}">
+					<q:forEach var="tempProperty" items="${PROPERTY}">
 
 						<q:url var="tempLink" value="propertyController">
-							<q:param name="command" value="LOAD" />
+							<q:param name="command" value="PAY" />
 							<q:param name="property_id" value="${tempProperty.property_id}" />
+							<q:param name="owner_id" value="${tempProperty.owner_id}" />
 						</q:url>
 						<tr>
-							<td>${myProperty.property_type}</td>
-							<td>${myProperty.address}</td>
-							<td>${myProperty.suitable_for}</td>
-							<td>${myProperty.is_available}</td>
-							<td>${myProperty.owner}</td>
-							<td>${myProperty.rented_by}</td>
-							<td>${myProperty.charge}</td>
-							<td> 
-								<a href="${tempLink}">View</a>	
-							</td>	
+							<td>${tempProperty.property_type}</td>
+							<td>${tempProperty.address}</td>
+							<td>${tempProperty.suitable_for}</td>
+							<td>${tempProperty.is_available}</td>
+							<td>${tempProperty.rented_by}</td>
+							<td>${tempProperty.charge}</td>
+							<td><a href="${tempLink}">${(tempProperty.status)?'Paid':'Pay Now'}</a>
+							</td>
 						</tr>
 					</q:forEach>
 				</table>

@@ -47,6 +47,7 @@ public class PropertyTypeDbUtil {
 				int property_id = myRs.getInt("type_id");
 				String property_name = myRs.getString("type_name");
 				boolean isDeleted = myRs.getBoolean("isDeleted");
+				
 				// create new property type object
 				Property_Type tempProperty_Type = new Property_Type(property_id, property_name, isDeleted);
 

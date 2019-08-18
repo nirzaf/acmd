@@ -43,8 +43,8 @@ public class GetPropertyDbUtil {
 						+ "tbl_property.charge AS rent " + "FROM tbl_property INNER JOIN tbl_property_types ON "
 						+ "tbl_property_types.type_id = tbl_property.property_type "
 						+ "INNER JOIN tbl_owner ON  tbl_property.owner = tbl_owner.owner_id "
-						+ "LEFT JOIN tbl_student ON  tbl_property.rented_by = tbl_student.student_id "
-						+ "WHERE tbl_property.isDeleted = 1";
+						+ "LEFT JOIN tbl_student ON tbl_property.rented_by = tbl_student.student_id "
+						+ "WHERE tbl_property.isDeleted = 1 AND tbl_property.status = 1";
 
 				myStmt = myConn.prepareStatement(sql);
 
@@ -82,7 +82,7 @@ public class GetPropertyDbUtil {
 						+ "tbl_property_types.type_id = tbl_property.property_type "
 						+ "INNER JOIN tbl_owner ON  tbl_property.owner = tbl_owner.owner_id "
 						+ "LEFT JOIN tbl_student ON  tbl_property.rented_by = tbl_student.student_id "
-						+ "WHERE tbl_property.isDeleted = 1 AND tbl_property_types.type_name LIKE ? OR tbl_property.address LIKE ?";
+						+ "WHERE tbl_property.isDeleted = 1 AND tbl_property.status = 1 AND tbl_property_types.type_name LIKE ? OR tbl_property.address LIKE ?";
 
 				myStmt = myConn.prepareStatement(sql);
 
@@ -130,14 +130,17 @@ public class GetPropertyDbUtil {
 			// get a connection
 				myConn = ds.getConnection();
 				
-				String sql = "SELECT tbl_property.property_id AS property_id, " + "tbl_property_types.type_name AS type_name, "
+				String sql = "SELECT tbl_property.property_id AS property_id, " 
+						+ "tbl_property_types.type_name AS type_name, "
 						+ "tbl_property.address AS address, tbl_property.suitable_for AS suitable_for, "
-						+ "CASE (tbl_property.is_available) "
-						+ "WHEN '1' THEN 'available' ELSE 'Occupied' END AS availability, "
-						+ "tbl_owner.first_name AS owner, " + "CASE tbl_property.rented_by "
-						+ "WHEN '0' THEN 'none' ELSE tbl_student.first_name END as rented_by, "
-						+ "tbl_property.charge AS rent " + "FROM tbl_property INNER JOIN tbl_property_types ON "
-						+ "tbl_property_types.type_id = tbl_property.property_type "
+						+ "CASE (tbl_property.is_available) WHEN '1' THEN 'available' ELSE 'Occupied' END AS availability, "
+						+ "tbl_property.owner AS owner_id, "
+						+ "tbl_owner.first_name AS owner, " 
+						+ "CASE tbl_property.rented_by WHEN '0' THEN 'none' ELSE tbl_student.first_name END AS rented_by, "
+						+ "tbl_property.charge AS rent, " 
+						+ "tbl_property.status AS status "
+						+ "FROM tbl_property "
+						+ "INNER JOIN tbl_property_types ON tbl_property_types.type_id = tbl_property.property_type "
 						+ "INNER JOIN tbl_owner ON  tbl_property.owner = tbl_owner.owner_id "
 						+ "LEFT JOIN tbl_student ON  tbl_property.rented_by = tbl_student.student_id "
 						+ "WHERE tbl_property.isDeleted = 1 AND tbl_property.owner = ?";
@@ -157,13 +160,15 @@ public class GetPropertyDbUtil {
 					String address = myRs.getString("address");
 					int suitable_for = myRs.getInt("suitable_for");
 					String availability = myRs.getString("availability");
+					int ownerId = myRs.getInt("owner_id");
 					String owner = myRs.getString("owner");
 					String rented_by = myRs.getString("rented_by");
 					float rent = myRs.getFloat("rent");
+					boolean status = myRs.getBoolean("status");
 
 					// create new property object
 					GetProperty tempProperty = new GetProperty(property_id, type_name, address, suitable_for,
-							availability, owner, rented_by, rent);
+							availability, ownerId, owner, rented_by, rent, status);
 
 					// add it to the list of properties
 					properties.add(tempProperty);

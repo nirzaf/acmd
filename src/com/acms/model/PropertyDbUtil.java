@@ -94,6 +94,32 @@ public class PropertyDbUtil {
 			c.close(myConn, myStmt, null);
 		}
 	}
+	
+	public void updatePayment(int property_id) throws Exception {
+
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+
+		try {
+			// get db connection
+			myConn =  ds.getConnection();
+
+			// create SQL update statement
+			String sql = "update tbl_property set status=1 where property_id=?";
+
+			// prepare statement
+			myStmt = myConn.prepareStatement(sql);
+
+			// set params
+			myStmt.setInt(1, property_id);
+
+			// execute SQL statement
+			myStmt.execute();
+		} finally {
+			// clean up JDBC objects
+			c.close(myConn, myStmt, null);
+		}
+	}
 
 	public GetProperty getProperty(int property_id) throws Exception {
 
@@ -107,14 +133,17 @@ public class PropertyDbUtil {
 			myConn = ds.getConnection();
 
 			// create sql to get selected owner
-			String sql = "SELECT tbl_property.property_id AS property_id, " + "tbl_property_types.type_name AS type_name, "
+			String sql = "SELECT tbl_property.property_id AS property_id, " 
+					+ "tbl_property_types.type_name AS type_name, "
 					+ "tbl_property.address AS address, tbl_property.suitable_for AS suitable_for, "
 					+ "CASE (tbl_property.is_available) "
 					+ "WHEN '1' THEN 'available' ELSE 'occupied' END AS availability, "
-					+ "tbl_owner.first_name AS owner, " + "CASE tbl_property.rented_by "
+					+ "tbl_owner.first_name AS owner, " 
+					+ "CASE tbl_property.rented_by "
 					+ "WHEN '0' THEN 'none' ELSE tbl_student.first_name END as rented_by, "
-					+ "tbl_property.charge AS rent " + "FROM tbl_property INNER JOIN tbl_property_types ON "
-					+ "tbl_property_types.type_id = tbl_property.property_type "
+					+ "tbl_property.charge AS rent " 
+					+ "FROM tbl_property "
+					+ "INNER JOIN tbl_property_types ON tbl_property_types.type_id = tbl_property.property_type "
 					+ "INNER JOIN tbl_owner ON  tbl_property.owner = tbl_owner.owner_id "
 					+ "LEFT JOIN tbl_student ON  tbl_property.rented_by = tbl_student.student_id "
 					+ "WHERE tbl_property.property_id =? AND tbl_property.isDeleted = 1";
@@ -130,7 +159,6 @@ public class PropertyDbUtil {
 
 			// retrieve data from result set row
 			while (myRs.next()) {
-				int id = property_id;
 				String type_name = myRs.getString("type_name");
 				String address = myRs.getString("address");
 				int suitable_for = myRs.getInt("suitable_for");
@@ -227,39 +255,6 @@ public class PropertyDbUtil {
 			myStmt.executeUpdate();
 		} finally {
 			// clean up JDBC code
-			c.close(myConn, myStmt, null);
-		}
-	}
-	
-	public void addViewRequest(ViewRequest viewRequest) throws Exception {
-		Connection myConn = null;
-		PreparedStatement myStmt = null;
-
-		try {
-			// get db connection
-			myConn = ds.getConnection();
-	
-			String query = "INSERT INTO `tbl_view_request`"
-							+ "(`requested_by`, `requested_property`, `requested_date`, `date_of_view`) "
-							+ "VALUES (?,?,?,?)";
-
-			myStmt = myConn.prepareStatement(query);
-			try {
-			// set the param values for the owner
-			myStmt.setInt(1, viewRequest.getRequested_by());
-			myStmt.setInt(2, viewRequest.getRequested_property());
-			myStmt.setString(3, viewRequest.getRequested_date());
-			myStmt.setString(4, viewRequest.getDate_of_view());
-
-			// execute sql insert
-			myStmt.execute();
-			
-			}catch(Exception ex){
-				ex.printStackTrace();
-			}
-
-		} finally {
-			// clean up JDBC objects
 			c.close(myConn, myStmt, null);
 		}
 	}
