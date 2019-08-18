@@ -23,8 +23,8 @@ public class TestServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	//Define datasource/connection pool for Resource Injection
-			@Resource(name="jdbc/ams")
-			private DataSource dataSource;
+	@Resource(name="jdbc/ams")
+	private DataSource dataSource;
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -66,5 +66,4 @@ public class TestServlet extends HttpServlet {
 			ex.printStackTrace();
 		}
 	}
-
 }

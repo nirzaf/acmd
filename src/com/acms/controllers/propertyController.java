@@ -1,36 +1,38 @@
 package com.acms.controllers;
 
 import java.io.IOException;
-import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 import com.acms.jdbc.GetProperty;
 import com.acms.jdbc.Property;
 import com.acms.jdbc.Property_Type;
+import com.acms.jdbc.ViewRequest;
 import com.acms.model.GetPropertyDbUtil;
 import com.acms.model.PropertyDbUtil;
 import com.acms.model.PropertyTypeDbUtil;
-import com.acms.model.SqliteConUtil;
+import com.acms.model.ConUtil;
 
 @WebServlet("/propertyController")
 public class propertyController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	// private StudentDbUtil studentDbUtil;
+	@Resource(name = "jdbc/ams")
+	private DataSource ds;
+
 	private GetPropertyDbUtil propertyDbUtil;
 	private PropertyTypeDbUtil propertyTypeDbUtil;
 	private PropertyDbUtil dbUtil;
-
-	// private DataSource dataSource;
-
-	SqliteConUtil conn = new SqliteConUtil();
 
 	@Override
 	public void init() throws ServletException {
@@ -38,8 +40,9 @@ public class propertyController extends HttpServlet {
 		super.init();
 
 		try {
-			propertyDbUtil = new GetPropertyDbUtil(conn);
-			propertyTypeDbUtil = new PropertyTypeDbUtil(conn);
+			propertyDbUtil = new GetPropertyDbUtil(ds);
+			propertyTypeDbUtil = new PropertyTypeDbUtil(ds);
+			dbUtil = new PropertyDbUtil(ds);
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}
@@ -63,6 +66,18 @@ public class propertyController extends HttpServlet {
 				listProperties(request, response);
 				break;
 
+			case "LOAD":
+				loadProperty(request, response);
+				break;
+
+			case "VIEW":
+				viewRequest(request, response);
+				break;
+				
+			case "MYLIST" :
+				myProperties(request, response);
+				break;
+
 			case "LIST_OF_TYPES":
 				listProperty_types(request, response);
 				break;
@@ -77,6 +92,26 @@ public class propertyController extends HttpServlet {
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}
+	}
+
+	private void viewRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		// read id from form data
+		int property_id = Integer.parseInt(request.getParameter("property_id"));
+		String viewDate = request.getParameter("date_of_view");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDateTime now = LocalDateTime.now();
+		String currentDate = dtf.format(now);
+		int user_id = Integer.parseInt(request.getParameter("user_id").trim());
+
+		ViewRequest viewRequest = new ViewRequest(user_id, property_id, currentDate, viewDate);
+		System.out.println(user_id +"  "+ property_id +"  "+ currentDate +"  "+ viewDate);
+
+		// add to database
+		dbUtil.addViewRequest(viewRequest);
+
+		// send them back to "property list" page
+		listProperties(request, response);
 	}
 
 	/*
@@ -95,61 +130,43 @@ public class propertyController extends HttpServlet {
 
 		// read info from form data
 		try {
-			
-		String address = request.getParameter("address");
-		System.out.println(" property_type : " + request.getParameter("property_type") 
-		+ "  ||address: " +  address + "  ||suitable_for : " 
-		+ request.getParameter("suitable") + "  ||is_available : " 
-		+ request.getParameter("is_available") + "  ||owner_id : " 
-		+ request.getParameter("owner_id") + "  ||rented_by : " 
-		+ request.getParameter("rented_by") + "  ||charge: " 
-		+ request.getParameter("charge"));
-		
-		int property_type = Integer.parseInt(request.getParameter("property_type").trim());
-		
-		int suitable_for = Integer.parseInt(request.getParameter("suitable").trim());
-		int is_available = Integer.parseInt(request.getParameter("is_available").trim());
-		int owner_id = Integer.parseInt(request.getParameter("owner_id").trim());
-		int rented_by = Integer.parseInt(request.getParameter("rented_by").trim());
-		float charge = Float.parseFloat(request.getParameter("charge").trim());
-		boolean isDeleted = true;
-			
-		Property theProperty = new Property(property_type, address, suitable_for, is_available, owner_id, rented_by,
-				charge, isDeleted);
-		
-		System.out.println(" property_type : " + theProperty.getProperty_type() 
-		+ "  ||address: " +  theProperty.getAddress() 
-		+ "  ||suitable_for : " + theProperty.getSuitable_for() 
-		+ "  ||is_available : " + theProperty.getIs_available() 
-		+ "  ||owner_id : " + theProperty.getOwner() 
-		+ "  ||rented_by : " + theProperty.getRented_by() 
-		+ "  ||charge: " + theProperty.getCharge());
-		
+			int property_type = Integer.parseInt(request.getParameter("property_type").trim());
+			String address = request.getParameter("address");
+			int suitable_for = Integer.parseInt(request.getParameter("suitable").trim());
+			int is_available = Integer.parseInt(request.getParameter("is_available").trim());
+			int owner_id = Integer.parseInt(request.getParameter("owner_id").trim());
+			int rented_by = Integer.parseInt(request.getParameter("rented_by").trim());
+			float charge = Float.parseFloat(request.getParameter("charge").trim());
+			boolean isDeleted = true;
+
+			Property theProperty = new Property(property_type, address, suitable_for, is_available, owner_id, rented_by,
+					charge, isDeleted);
+
 			dbUtil.addProperty(theProperty);
-			
+
 			listProperties(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	/*
-	 * private void loadStudent(HttpServletRequest request, HttpServletResponse
-	 * response) throws Exception {
-	 * 
-	 * // read student id from form data int theStudentId =
-	 * Integer.parseInt(request.getParameter("student_id"));
-	 * 
-	 * // get student from database (db util) Student theStudent =
-	 * studentDbUtil.getStudent(theStudentId);
-	 * 
-	 * // place student in the request attribute request.setAttribute("THE_STUDENT",
-	 * theStudent);
-	 * 
-	 * // send to jsp page: update-student-form.jsp RequestDispatcher dispatcher =
-	 * request.getRequestDispatcher("/update-student-form.jsp");
-	 * dispatcher.forward(request, response); }
-	 */
+	private void loadProperty(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		// read id from form data
+		int propertyId = Integer.parseInt(request.getParameter("property_id"));
+
+		// get property from database (db util)
+		GetProperty theProperty = dbUtil.getProperty(propertyId);
+
+		// place student in the request attribute
+		request.setAttribute("PROPERTY", theProperty);
+
+		// send to jsp page: update-property-form.jsp
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/update-property-form.jsp");
+
+		dispatcher.forward(request, response);
+
+	}
 
 	private void listProperty_types(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -160,6 +177,23 @@ public class propertyController extends HttpServlet {
 
 		// send to the view page (jsp)
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/add-property.jsp");
+		dispatcher.forward(request, response);
+	}
+	
+	private void myProperties(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// get list from dbUtil
+		String user_id = request.getParameter("owner_id");
+		List<GetProperty> property;
+		
+		property = propertyDbUtil.getMyProperties(Integer.parseInt(user_id));
+		
+		System.out.println("Your user id now :  " + user_id);
+			
+		// add to the request
+		request.setAttribute("MY_LIST", property);
+
+		// send to the view page (jsp)
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/list-properties.jsp");
 		dispatcher.forward(request, response);
 	}
 

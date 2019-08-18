@@ -52,7 +52,6 @@ body {
 		if (userId == null)
 			response.sendRedirect("userAccountControllerServlet");
 	%>
-
 	<div class="topnav">
 		<div id="header">
 			<h2 style="text-align:center; background-color: #333;" >XYZ University</h2>
@@ -61,10 +60,7 @@ body {
 
 	<div>
 		<div class="topnav">
-			<a href="studentControllerServlet?command=PROFILE&student_id=<%=userId%>">My Profile</a> 
-			<a href="propertyController">Properties  <%=userId%></a> 
-			<a href="#contact">Payment  <%=user_type%></a> 
-			<a href="#about">About <%=username%> </a>
+			<a href="#">User accounts</a> 
 			<a href="userAccountControllerServlet">Logout</a>
 		</div>
 	</div>

@@ -6,14 +6,20 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+
 import com.acms.jdbc.UserAccount;
 
 public class UserAccountDbUtil {
 
-	SqliteConUtil conn = new SqliteConUtil();
+	@Resource(name="jdbc/ams")
+	private DataSource ds;
+	ConUtil c = new ConUtil();
 
-	public UserAccountDbUtil(SqliteConUtil con) {
-		con = this.conn;
+	public UserAccountDbUtil(DataSource dataSource) {
+		ds = dataSource;
 	}
 
 	public boolean Auth(UserAccount theUser) {
@@ -25,8 +31,10 @@ public class UserAccountDbUtil {
 		String Username = theUser.getUsername();
 		String Password = theUser.getPassword();
 
-		//System.out.println("User entered username : " + Username);
-		//System.out.println("User entered password : " + Password);
+		/*
+		 * System.out.println("User entered username : " + Username);
+		 * System.out.println("User entered password : " + Password);
+		 */
 
 		// Temporary Strings to hold username and password fetched from database
 		String dbUsername = "";
@@ -34,7 +42,7 @@ public class UserAccountDbUtil {
 
 		try {
 			// get a connection
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql statement
 			String sql = "select username, password from tbl_users where status=1";
@@ -49,8 +57,10 @@ public class UserAccountDbUtil {
 				dbUsername = myRs.getString("username");
 				dbPassword = myRs.getString("password");
 
-				//System.out.println("username retrived from db : " + dbUsername);
-				//System.out.println("password retrived from db : " + dbPassword);
+				/*
+				 * System.out.println("username retrieved from db : " + dbUsername);
+				 * System.out.println("password retrieved from db : " + dbPassword);
+				 */
 
 				// Validate the username and password by matching with db username and password
 				if (dbUsername.equals(Username) && dbPassword.equals(Password)) {
@@ -62,7 +72,7 @@ public class UserAccountDbUtil {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
-			close(myConn, myStmt, myRs);
+			c.close(myConn, myStmt, myRs);
 		}
 		return false;
 	}
@@ -78,7 +88,7 @@ public class UserAccountDbUtil {
 
 		try {
 			// get a connection
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql statement
 			String sql = "select * from tbl_users";
@@ -107,7 +117,7 @@ public class UserAccountDbUtil {
 			return userAccounts;
 		} finally {
 			// close JDBC objects
-			close(myConn, myStmt, myRs);
+			c.close(myConn, myStmt, myRs);
 		}
 	}
 
@@ -118,7 +128,7 @@ public class UserAccountDbUtil {
 
 		try {
 			// get db connection
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql for insert
 			String sql = "insert into tbl_users " + "(username, password, user_type)" + "values (?, ?, ?)";
@@ -133,7 +143,7 @@ public class UserAccountDbUtil {
 			myStmt.execute();
 		} finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, null);
+			c.close(myConn, myStmt, null);
 		}
 	}
 
@@ -145,7 +155,7 @@ public class UserAccountDbUtil {
 
 		try {
 			// get db connection
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create SQL update statement
 			String sql = "update tbl_users " + "set username=?, password=?, user_type=? " + "where user_id=?";
@@ -163,7 +173,7 @@ public class UserAccountDbUtil {
 			myStmt.execute();
 		} finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, null);
+			c.close(myConn, myStmt, null);
 		}
 	}
 
@@ -179,7 +189,7 @@ public class UserAccountDbUtil {
 			int userId = Integer.parseInt(theUserId);
 
 			// get connection to database
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql to delete/disable user
 			sql = "update tbl_users SET status = CASE WHEN status = 0 THEN 1 WHEN status = 1 THEN 0 END Where user_id =?";
@@ -194,7 +204,7 @@ public class UserAccountDbUtil {
 			myStmt.execute();
 		} finally {
 			// clean up JDBC code
-			close(myConn, myStmt, null);
+			c.close(myConn, myStmt, null);
 		}
 	}
 
@@ -242,7 +252,7 @@ public class UserAccountDbUtil {
 			user_id = Integer.parseInt(userId);
 
 			// get connection to database
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql to get selected user
 			String sql = "select * from tbl_users where user_id=?";
@@ -272,7 +282,7 @@ public class UserAccountDbUtil {
 			return theUser;
 		} finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, myRs);
+			c.close(myConn, myStmt, myRs);
 		}
 	}
 
@@ -286,8 +296,8 @@ public class UserAccountDbUtil {
 
 		try {
 			// get connection to database
-			myConn = conn.getMySQLConnection();
-
+			myConn = ds.getConnection();
+			
 			// create sql to get selected user
 			String sql = "select user_id from tbl_users where username=? AND password=?";
 
@@ -312,7 +322,7 @@ public class UserAccountDbUtil {
 
 		} finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, myRs);
+			c.close(myConn, myStmt, myRs);
 		}
 	}
 
@@ -325,7 +335,7 @@ public class UserAccountDbUtil {
 
 		try {
 			// get connection to database
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql to get selected user
 			String sql = "select user_type from tbl_users where user_id=?";
@@ -350,7 +360,7 @@ public class UserAccountDbUtil {
 
 		} finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, myRs);
+			c.close(myConn, myStmt, myRs);
 		}
 	}
 
@@ -365,7 +375,7 @@ public class UserAccountDbUtil {
 			int userId = Integer.parseInt(theUserId);
 
 			// get connection to database
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql to delete/disable user
 			String sql = "update tbl_users status=0 where user_id=?";
@@ -380,27 +390,7 @@ public class UserAccountDbUtil {
 			myStmt.execute();
 		} finally {
 			// clean up JDBC code
-			close(myConn, myStmt, null);
-		}
-	}
-
-	// method to close and open connection pool
-	private void close(Connection myConn, Statement myStmt, ResultSet myRs) {
-
-		try {
-			if (myRs != null) {
-				myRs.close();
-			}
-
-			if (myStmt != null) {
-				myStmt.close();
-			}
-
-			if (myConn != null) {
-				myConn.close();
-			}
-		} catch (Exception exc) {
-			exc.printStackTrace();
+			c.close(myConn, myStmt, null);
 		}
 	}
 }

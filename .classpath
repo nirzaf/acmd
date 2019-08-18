@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_161"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_111"/>
 	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/sqlite-jdbc-3.7.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/bin/bootstrap.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/bin/tomcat-juli.jar"/>
@@ -13,13 +13,12 @@
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/catalina-ha.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/catalina-storeconfig.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/catalina-tribes.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/ecj-4.7.3a.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/el-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/jasper.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/jasper-el.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/jaspic-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/jsp-api.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/servlet-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/servlet-api.jar" sourcepath="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/servlet-api.jar.zip"/>
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/tomcat-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/tomcat-coyote.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/tomcat-dbcp.jar"/>
@@ -33,7 +32,5 @@
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/tomcat-websocket.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Apache Software Foundation/Tomcat 9.0/lib/websocket-api.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v9.0"/>
-	<classpathentry kind="lib" path="C:/Users/mfazrin/Downloads/jackson-core-2.1.1.jar.zip"/>
-	<classpathentry kind="lib" path="C:/Users/mfazrin/Downloads/jackson-core-2.2.0-rc1.jar.zip"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

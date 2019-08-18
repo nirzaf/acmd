@@ -2,6 +2,8 @@ package com.acms.controllers;
 
 import java.io.IOException;
 import java.util.List;
+
+import javax.annotation.Resource;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,12 +12,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
 import com.acms.jdbc.Owner;
 import com.acms.jdbc.Student;
 import com.acms.jdbc.UserAccount;
+import com.acms.jdbc.UserCookies;
 import com.acms.model.OwnerDbUtil;
-import com.acms.model.SqliteConUtil;
 import com.acms.model.StudentDbUtil;
 import com.acms.model.UserAccountDbUtil;
 
@@ -25,11 +28,12 @@ import com.acms.model.UserAccountDbUtil;
 public class userAccountControllerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	@Resource(name="jdbc/ams")
+	private DataSource ds;
 	private UserAccountDbUtil userAccountDbUtil;
 	private StudentDbUtil studentDbUtil;
 	private OwnerDbUtil ownerDbUtil;
-
-	SqliteConUtil conn = new SqliteConUtil();
+	private HttpSession session;
 
 	@Override
 	public void init() throws ServletException {
@@ -37,9 +41,9 @@ public class userAccountControllerServlet extends HttpServlet {
 		super.init();
 
 		try {
-			userAccountDbUtil = new UserAccountDbUtil(conn);
-			studentDbUtil = new StudentDbUtil(conn);
-			ownerDbUtil = new OwnerDbUtil(conn);
+			userAccountDbUtil = new UserAccountDbUtil(ds);
+			studentDbUtil = new StudentDbUtil(ds);
+			ownerDbUtil = new OwnerDbUtil(ds);
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}
@@ -145,6 +149,7 @@ public class userAccountControllerServlet extends HttpServlet {
 		try {
 			Student theStudent = null;
 			Owner theOwner = null;
+			List<UserAccount> theUsers= null;
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
 
@@ -160,7 +165,7 @@ public class userAccountControllerServlet extends HttpServlet {
 
 			// creating object for UserAccountDbUtil.
 			// This class contains main logic of the login part.
-			UserAccountDbUtil uaDbUtil = new UserAccountDbUtil(conn);
+			UserAccountDbUtil uaDbUtil = new UserAccountDbUtil(ds);
 
 			boolean validateAuth = uaDbUtil.Auth(userAccount);
 
@@ -174,36 +179,36 @@ public class userAccountControllerServlet extends HttpServlet {
 				String userType = Integer.toString(user_type);
 
 				// create new session
-				HttpSession newSession = request.getSession(true);
-				newSession.setMaxInactiveInterval(1500);
-				newSession.setAttribute("username", username);
-				newSession.setAttribute("user_id", user_id);
-				newSession.setAttribute("user_type", userType);
+				session = request.getSession(true);
+				session.setMaxInactiveInterval(1500);
+				session.setAttribute("username", username);
+				session.setAttribute("user_id", user_id);
+				session.setAttribute("user_type", user_type);
 
 				request.setAttribute("username", username);
 				request.setAttribute("user_id", user_id);
-				request.setAttribute("user_type", userType);
-				Cookie loginCookie = new Cookie("user_id", userId);
-
+				request.setAttribute("user_type", user_type);
+										
+				Cookie userIdCookie = new Cookie("user_id", userId);
+				Cookie userTypeCookie = new Cookie("user_type", userType);
+				Cookie usernameCookie = new Cookie("username", username);
+				
 				// setting cookie to expiry in 60 mins
-				loginCookie.setMaxAge(60 * 60);
-				response.addCookie(loginCookie);
+				userIdCookie.setMaxAge(60 * 60);
+				userTypeCookie.setMaxAge(60 * 60);
+				usernameCookie.setMaxAge(60 * 60);
+				
+				response.addCookie(userIdCookie);
+				response.addCookie(userTypeCookie);	
+				response.addCookie(usernameCookie);	
+				
 				request.setAttribute("user_id", user_id);
+			
 				if (user_id > 0 && user_type == 1) {
-
 					boolean isExist = studentDbUtil.isStudentExist(user_id);
+					System.out.println(isExist);
 
-					if (isExist) {
-						// get student from database (db util)
-						theStudent = studentDbUtil.getStudent(user_id);
-
-						// place student in the request attribute
-						request.setAttribute("THE_STUDENT", theStudent);
-
-						// send to jsp page: update-student-form.jsp
-						RequestDispatcher dispatcher = request.getRequestDispatcher("/update-student-form.jsp");
-						dispatcher.forward(request, response);
-					} else {
+					if (!isExist) {
 						int student_id = user_id;
 						String firstName = "First Name";
 						String lastName = "Last Name ";
@@ -217,17 +222,33 @@ public class userAccountControllerServlet extends HttpServlet {
 						// add the student to the database
 						studentDbUtil.addStudent(student);
 
-						theStudent = studentDbUtil.getStudent(user_id);
+					} 
+					// get student from database (db util)
+					theStudent = studentDbUtil.getStudent(user_id);
+					// place student in the request attribute
+					request.setAttribute("THE_STUDENT", theStudent);
 
-						// place student in the request attribute
-						request.setAttribute("THE_STUDENT", theStudent);
-
-						// send to jsp page: update-student-form.jsp
-						RequestDispatcher dispatcher = request.getRequestDispatcher("/update-student-form.jsp");
-						dispatcher.forward(request, response);
-					}
+					// send to jsp page: update-student-form.jsp
+					RequestDispatcher dispatcher = request.getRequestDispatcher("/update-student-form.jsp");
+					dispatcher.forward(request, response);
 				} else if (user_id > 0 && user_type == 2) {
+					boolean isExist = ownerDbUtil.isOwnerExist(user_id);
+					
+					if (!isExist) {
+						int owner_id = user_id;
+						String firstName = "First Name";
+						String lastName = "Last Name ";
+						String address = "Address ";
+						String email = "Email";
+						String telephone = "Telephone";
 
+						// create a new student object
+						Owner owner = new Owner(owner_id, firstName, lastName, address, email, telephone);
+
+						// add the student to the database
+						ownerDbUtil.addOwner(owner);
+					} 
+					
 					// get owner from database (db util)
 					theOwner = ownerDbUtil.getOwner(user_id);
 
@@ -239,7 +260,13 @@ public class userAccountControllerServlet extends HttpServlet {
 					dispatcher.forward(request, response);
 				} else {
 					// then it is the admin account
-					RequestDispatcher req = request.getRequestDispatcher("list-users-form.jsp");
+					// get owner from database (db util)
+					theUsers = userAccountDbUtil.getUserAccounts();
+
+					// place owner in the request attribute
+					request.setAttribute("USER_LIST", theUsers);
+					
+					RequestDispatcher req = request.getRequestDispatcher("list-users.jsp");
 					req.forward(request, response);
 				}
 			} else { // else username and password is incorrect return to the login page
@@ -260,7 +287,6 @@ public class userAccountControllerServlet extends HttpServlet {
 			String password = request.getParameter("password");
 			int user_type = Integer.parseInt(request.getParameter("account-type"));
 
-			System.out.println("username : " + username + " Password : " + password + "  user_type : " + user_type);
 			// create a new user object
 			UserAccount theUser = new UserAccount(username, password, user_type);
 
@@ -269,8 +295,6 @@ public class userAccountControllerServlet extends HttpServlet {
 
 			// get user id for given username and password
 			int user_id = userAccountDbUtil.getUserId(username, password);
-
-			System.out.println(user_id);
 
 			request.setAttribute("errMessage", theUser.getUsername());
 			request.setAttribute("user_id", user_id);

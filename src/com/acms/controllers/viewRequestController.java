@@ -15,8 +15,8 @@ import javax.sql.DataSource;
 import com.acms.jdbc.Student;
 import com.acms.model.StudentDbUtil;
 
-@WebServlet("/studentControllerServlet")
-public class studentControllerServlet extends HttpServlet {
+@WebServlet("/viewRequestController")
+public class viewRequestController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private StudentDbUtil studentDbUtil;

@@ -61,10 +61,10 @@ body {
 
 	<div>
 		<div class="topnav">
-			<a href="studentControllerServlet?command=PROFILE&student_id=<%=userId%>">My Profile</a> 
-			<a href="propertyController">Properties  <%=userId%></a> 
-			<a href="#contact">Payment  <%=user_type%></a> 
-			<a href="#about">About <%=username%> </a>
+			<a href="ownerControllerServlet?command=PROFILE&owner_id=<%=userId%>">My Profile</a> 
+			<a href="propertyController?command=MYLIST&owner_id=<%=userId%>">My Properties </a> 
+			<a href="#">Payment </a> 
+			<a href="#">View Request</a>
 			<a href="userAccountControllerServlet">Logout</a>
 		</div>
 	</div>

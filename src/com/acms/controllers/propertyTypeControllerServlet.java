@@ -3,33 +3,34 @@ package com.acms.controllers;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 import com.acms.jdbc.Property_Type;
 import com.acms.model.PropertyTypeDbUtil;
-import com.acms.model.SqliteConUtil;
+import com.acms.model.ConUtil;
 
 @WebServlet("/propertyTypeControllerServlet")
 public class propertyTypeControllerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	@Resource(name="jdbc/ams")
+	private DataSource ds;
+	
 	private PropertyTypeDbUtil propertyTypeDbUtil;
-
-	// private DataSource dataSource;
-
-	SqliteConUtil conn = new SqliteConUtil();
 
 	@Override
 	public void init() throws ServletException {
 		// TODO Auto-generated method stub
 		super.init();
 		try {
-			propertyTypeDbUtil = new PropertyTypeDbUtil(conn);
+			propertyTypeDbUtil = new PropertyTypeDbUtil(ds);
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}

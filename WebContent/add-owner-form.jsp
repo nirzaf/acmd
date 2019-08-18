@@ -12,20 +12,8 @@
 
 <body>
 
-	<%
-		// This scriplet function will validate the user logged in or not
-		String userName = null;
-		Cookie[] cookies = request.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals("user_id"))
-					userName = cookie.getValue();
-			}
-		}
-		if (userName == null)
-			response.sendRedirect("userAccountControllerServlet");
-	%>
-
+	<%@include file="owners-navigation.jsp"%>
+	
 	<div id="container">
 		<h3>Add Owner</h3>
 

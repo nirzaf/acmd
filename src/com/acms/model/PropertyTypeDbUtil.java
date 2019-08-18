@@ -6,14 +6,20 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+
 import com.acms.jdbc.Property_Type;
 
 public class PropertyTypeDbUtil {
 
-	SqliteConUtil conn = new SqliteConUtil();
+	@Resource(name="jdbc/ams")
+	private DataSource ds;
+	ConUtil c = new ConUtil();
 
-	public PropertyTypeDbUtil(SqliteConUtil con) {
-		con = this.conn;
+	public PropertyTypeDbUtil(DataSource dataSource) {
+		ds = dataSource;
 	}
 
 	public List<Property_Type> getProperty_Types() throws Exception {
@@ -25,7 +31,7 @@ public class PropertyTypeDbUtil {
 
 		try {
 			// get a connection
-			myConn = conn.getMySQLConnection();
+			myConn =  ds.getConnection();
 
 			// create sql statement
 			String sql = "select type_id, type_name, isDeleted from `tbl_property_types` where `isDeleted` = 1 ";
@@ -51,7 +57,7 @@ public class PropertyTypeDbUtil {
 
 		} finally {
 			// close JDBC objects
-			close(myConn, myStmt, myRs);
+			c.close(myConn, myStmt, myRs);
 		}
 	}
 
@@ -61,7 +67,7 @@ public class PropertyTypeDbUtil {
 
 		try {
 			// get db connection
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql for insert
 			String sql = "insert into tbl_property_types (type_name) values (?)";
@@ -75,7 +81,7 @@ public class PropertyTypeDbUtil {
 			myStmt.execute();
 		} finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, null);
+			c.close(myConn, myStmt, null);
 		}
 	}
 
@@ -86,7 +92,7 @@ public class PropertyTypeDbUtil {
 
 		try {
 			// get db connection
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create SQL update statement
 			String sql = "update tbl_property_types" 
@@ -104,7 +110,7 @@ public class PropertyTypeDbUtil {
 			myStmt.execute();
 		} finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, null);
+			c.close(myConn, myStmt, null);
 		}
 	}
 
@@ -117,7 +123,7 @@ public class PropertyTypeDbUtil {
 
 		try {
 			// get connection to database
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql to get selected owner
 			String sql = "select type_name from tbl_property_types where type_id=?";
@@ -145,7 +151,7 @@ public class PropertyTypeDbUtil {
 			return theProperty_Type;
 		} finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, myRs);
+			c.close(myConn, myStmt, myRs);
 		}
 	}
 
@@ -156,7 +162,7 @@ public class PropertyTypeDbUtil {
 
 		try {
 			// get connection to database
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql to delete Property
 			String sql = "update `tbl_property_types` set `isDeleted` = 0 where `type_id` = ?";
@@ -171,27 +177,7 @@ public class PropertyTypeDbUtil {
 			myStmt.execute();
 		} finally {
 			// clean up JDBC code
-			close(myConn, myStmt, null);
-		}
-	}
-
-	// method to close and open connection
-	private void close(Connection myConn, Statement myStmt, ResultSet myRs) {
-
-		try {
-			if (myRs != null) {
-				myRs.close();
-			}
-
-			if (myStmt != null) {
-				myStmt.close();
-			}
-
-			if (myConn != null) {
-				myConn.close(); 
-			}
-		} catch (Exception exc) {
-			exc.printStackTrace();
+			c.close(myConn, myStmt, null);
 		}
 	}
 }

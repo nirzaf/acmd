@@ -6,14 +6,20 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+
 import com.acms.jdbc.Owner;
 
 public class OwnerDbUtil {
 
-	SqliteConUtil conn = new SqliteConUtil();
+	@Resource(name="jdbc/ams")
+	private DataSource ds;
+	ConUtil c = new ConUtil();
 
-	public OwnerDbUtil(SqliteConUtil con) {
-		con = this.conn;
+	public OwnerDbUtil(DataSource dataSource) {
+		ds = dataSource;
 	}
 
 	public List<Owner> getOwners() throws Exception {
@@ -25,7 +31,7 @@ public class OwnerDbUtil {
 
 		try {
 			// get a connection
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql statement
 			String sql = "select * from `tbl_owner` where `isDeleted` = 1 order by `first_name` ";
@@ -55,7 +61,7 @@ public class OwnerDbUtil {
 
 		} finally {
 			// close JDBC objects
-			close(myConn, myStmt, myRs);
+			c.close(myConn, myStmt, myRs);
 		}
 	}
 
@@ -65,11 +71,12 @@ public class OwnerDbUtil {
 
 		try {
 			// get db connection
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql for insert
-			String sql = "insert into tbl_owner " + "(first_name, last_name, address, email, telephone)"
-					+ "values (?, ?, ?, ?,?)";
+			String sql = "insert into tbl_owner " 
+					+ "(first_name, last_name, address, email, telephone)"
+					+ "values (?, ?, ?, ?, ?)";
 
 			myStmt = myConn.prepareStatement(sql);
 
@@ -84,7 +91,7 @@ public class OwnerDbUtil {
 			myStmt.execute();
 		} finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, null);
+			c.close(myConn, myStmt, null);
 		}
 	}
 
@@ -95,7 +102,7 @@ public class OwnerDbUtil {
 
 		try {
 			// get db connection
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create SQL update statement
 			String sql = "update tbl_owner " + "set first_name=?, last_name=?, address=? ,email=? , telephone=? "
@@ -116,7 +123,7 @@ public class OwnerDbUtil {
 			myStmt.execute();
 		} finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, null);
+			c.close(myConn, myStmt, null);
 		}
 	}
 
@@ -129,7 +136,7 @@ public class OwnerDbUtil {
 
 		try {
 			// get connection to database
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql to get selected owner
 			String sql = "select * from tbl_owner where owner_id=?";
@@ -161,10 +168,42 @@ public class OwnerDbUtil {
 			return theOwner;
 		} finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, myRs);
+			c.close(myConn, myStmt, myRs);
 		}
 	}
 
+	public boolean isOwnerExist(int ownerId) throws Exception {
+
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+		ResultSet myRs = null;
+
+		try {
+			// get connection to database
+			myConn = ds.getConnection();
+			// create sql to get selected student
+			String sql = "select first_name from tbl_owners where owner_id=?";
+
+			// create prepared statement
+			myStmt = myConn.prepareStatement(sql);
+
+			// set params
+			myStmt.setInt(1, ownerId);
+
+			// execute statement
+			myRs = myStmt.executeQuery();
+
+			// retrieve data from result set row	
+			while (myRs.next()) {
+				System.out.println(" Your in If condition true ");
+				return true;
+			} 
+			return false;
+		} finally {
+			c.close(myConn, myStmt, myRs);
+		}
+	}
+	
 	public void deleteOwner(String theOwnerId) throws Exception {
 
 		Connection myConn = null;
@@ -175,7 +214,7 @@ public class OwnerDbUtil {
 			int ownerId = Integer.parseInt(theOwnerId);
 
 			// get connection to database
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql to delete Owner
 			String sql = "update `tbl_owner` set `isDeleted` = 0 where `owner_id` = ?";
@@ -190,27 +229,7 @@ public class OwnerDbUtil {
 			myStmt.execute();
 		} finally {
 			// clean up JDBC code
-			close(myConn, myStmt, null);
-		}
-	}
-
-	// method to close and open connection pool
-	private void close(Connection myConn, Statement myStmt, ResultSet myRs) {
-
-		try {
-			if (myRs != null) {
-				myRs.close();
-			}
-
-			if (myStmt != null) {
-				myStmt.close();
-			}
-
-			if (myConn != null) {
-				myConn.close(); 
-			}
-		} catch (Exception exc) {
-			exc.printStackTrace();
+			c.close(myConn, myStmt, null);
 		}
 	}
 }

@@ -3,15 +3,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-<%
-	response.setHeader("Cache-Control", "no-cache");
-	response.setHeader("Cache-Control", "no-store");
-	response.setHeader("Pragma", "no-cache");
-	response.setDateHeader("Expires", 0);
- 
-	if (request.getAttribute("user_id") == null)
-		response.sendRedirect("userAccountControllerServlet?command=LOGOUT"); 
-%>
 
 <title>Update Student</title>
 <link type="text/css" rel="stylesheet" href="css/style.css">
@@ -21,20 +12,6 @@
 <body>
 
 	<%@include file="student-navigation.jsp" %>
-
-	<%
-		// This scriplet function will validate the user logged in or not
-		String userName = null;
-		Cookie[] cookies = request.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals("user_id"))
-					userName = cookie.getValue();
-			}
-		}
-		if (userName == null)
-			response.sendRedirect("userAccountControllerServlet");
-	%>
 
 	<div id="container">
 		<h3>Student Profile</h3>
@@ -86,10 +63,6 @@
 		</form>
 
 		<div style="clear: both;"></div>
-
-		<p>
-			<a href="studentControllerServlet">Back to List</a>
-		</p>
 	</div>
 </body>
 </html>

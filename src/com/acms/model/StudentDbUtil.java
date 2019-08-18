@@ -6,14 +6,21 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+
 import com.acms.jdbc.Student;
 
 public class StudentDbUtil {
 
-	SqliteConUtil conn = new SqliteConUtil();
+	@Resource(name="jdbc/ams")
+	private DataSource ds;
+	
+	ConUtil c = new ConUtil();
 
-	public StudentDbUtil(SqliteConUtil con) {
-		con = this.conn;
+	public StudentDbUtil(DataSource dataSource) {
+		ds = dataSource;
 	}
 
 	public List<Student> getStudents() throws Exception {
@@ -25,7 +32,7 @@ public class StudentDbUtil {
 
 		try {
 			// get a connection
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql statement
 			String sql = "select * from `tbl_student` where `isDeleted` = 1 order by `first_name` ";
@@ -55,7 +62,7 @@ public class StudentDbUtil {
 			return students;
 		} finally {
 			// close JDBC objects
-			close(myConn, myStmt, myRs);
+			c.close(myConn, myStmt, myRs);
 		}
 	}
 
@@ -65,7 +72,7 @@ public class StudentDbUtil {
 
 		try {
 			// get db connection
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql for insert
 			String sql = "insert into tbl_student " + "(student_id, first_name, last_name, address, email, telephone)"
@@ -85,7 +92,7 @@ public class StudentDbUtil {
 			myStmt.execute();
 		} finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, null);
+			c.close(myConn, myStmt, null);
 		}
 	}
 
@@ -96,7 +103,7 @@ public class StudentDbUtil {
 
 		try {
 			// get db connection
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create SQL update statement
 			String sql = "update tbl_student " + "set first_name=?, last_name=?, address=? ,email=? , telephone=? "
@@ -117,36 +124,42 @@ public class StudentDbUtil {
 			myStmt.execute();
 		} finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, null);
+			c.close(myConn, myStmt, null);
 		}
 	}
 
-	public boolean isStudentExist(int studentId) throws Exception{
+	public boolean isStudentExist(int studentId) throws Exception {
+
 		Connection myConn = null;
 		PreparedStatement myStmt = null;
-		boolean myRs = false;
-		// get connection to database
-		myConn = conn.getMySQLConnection();
-		// create sql to get selected student
-		String sql = "select * from tbl_student where student_id=?";
+		ResultSet myRs = null;
 
-		// create prepared statement
-		myStmt = myConn.prepareStatement(sql);
+		try {
+			// get connection to database
+			myConn = ds.getConnection();
+			// create sql to get selected student
+			String sql = "select first_name from tbl_student where student_id=?";
 
-		// set params
-		myStmt.setInt(1, studentId);
+			// create prepared statement
+			myStmt = myConn.prepareStatement(sql);
 
-		// execute statement
-		myRs = myStmt.execute();
-		
-		// retrieve data from result set row
-		if (myRs) {
-			return true;
-		} else {
+			// set params
+			myStmt.setInt(1, studentId);
+
+			// execute statement
+			myRs = myStmt.executeQuery();
+
+			// retrieve data from result set row	
+			while (myRs.next()) {
+				System.out.println(" Your in If condition true ");
+				return true;
+			} 
 			return false;
+		} finally {
+			c.close(myConn, myStmt, myRs);
 		}
 	}
-
+	
 	public Student getStudent(int studentId) throws Exception {
 
 		Student theStudent = null;
@@ -156,7 +169,7 @@ public class StudentDbUtil {
 
 		try {
 			// get connection to database
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql to get selected student
 			String sql = "select * from tbl_student where student_id=?";
@@ -188,7 +201,7 @@ public class StudentDbUtil {
 			return theStudent;
 		} finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, myRs);
+			c.close(myConn, myStmt, myRs);
 		}
 	}
 
@@ -202,7 +215,7 @@ public class StudentDbUtil {
 			int studentId = Integer.parseInt(theStudentId);
 
 			// get connection to database
-			myConn = conn.getMySQLConnection();
+			myConn = ds.getConnection();
 
 			// create sql to delete student
 			String sql = "update `tbl_student` set `isDeleted` = 0 where `student_id` = ?";
@@ -217,27 +230,7 @@ public class StudentDbUtil {
 			myStmt.execute();
 		} finally {
 			// clean up JDBC code
-			close(myConn, myStmt, null);
-		}
-	}
-
-	// method to close and open connection pool
-	private void close(Connection myConn, Statement myStmt, ResultSet myRs) {
-
-		try {
-			if (myRs != null) {
-				myRs.close();
-			}
-
-			if (myStmt != null) {
-				myStmt.close();
-			}
-
-			if (myConn != null) {
-				myConn.close();
-			}
-		} catch (Exception exc) {
-			exc.printStackTrace();
+			c.close(myConn, myStmt, null);
 		}
 	}
 }
