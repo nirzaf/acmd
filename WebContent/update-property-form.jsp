@@ -9,16 +9,13 @@
 
 <body>
 
-	<%@include file="owners-navigation.jsp"%>
+	<%@include file="student-navigation.jsp"%>
 
 	<div id="container">
 		<h3>Property Details</h3>
 
-		<form action="propertyController" method="GET">
-
+		<form action="viewRequestController" method="GET">
 			<input type="hidden" name="command" value="VIEW" /> 
-			<input type="hidden" name="owner_id" value="${PROPERTY.property_id}" />
-
 			<table>
 				<tbody>
 					<tr>					
@@ -60,7 +57,8 @@
 
 					<tr>
 						<td><label>Date of View:</label></td>
-						<td><input type="date" name="date_of_view" id="today" /></td>
+						<td><input type="date" name="date_of_view" id="today" required/></td>
+						<td><input type="hidden" name="student_id" value="<%=userId%>"/></td>
 					</tr>
 					
 					<tr>

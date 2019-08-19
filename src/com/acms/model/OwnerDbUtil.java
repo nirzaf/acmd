@@ -65,7 +65,7 @@ public class OwnerDbUtil {
 		}
 	}
 
-	public void addOwner(Owner theOwner) throws Exception {
+	public boolean addOwner(Owner theOwner) throws Exception {
 		Connection myConn = null;
 		PreparedStatement myStmt = null;
 
@@ -88,7 +88,11 @@ public class OwnerDbUtil {
 			myStmt.setString(5, theOwner.getTelephone());
 
 			// execute sql insert
-			myStmt.execute();
+			int result = myStmt.executeUpdate();
+			if(result ==0 )
+				return false;
+			else
+				return true;
 		} finally {
 			// clean up JDBC objects
 			c.close(myConn, myStmt, null);

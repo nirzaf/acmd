@@ -111,7 +111,7 @@ public class UserAccountDbUtil {
 	}
 
 	// create user account
-	public void createUser(UserAccount theUser) throws Exception {
+	public boolean createUser(UserAccount theUser) throws Exception {
 		Connection myConn = null;
 		PreparedStatement myStmt = null;
 
@@ -129,7 +129,11 @@ public class UserAccountDbUtil {
 			myStmt.setString(2, theUser.getPassword());
 			myStmt.setInt(3, theUser.getUser_type());
 			// execute sql insert
-			myStmt.execute();
+			int result = myStmt.executeUpdate();
+			if(result==0)
+				return false; 
+			else 
+				return true;
 		} finally {
 			// clean up JDBC objects
 			c.close(myConn, myStmt, null);

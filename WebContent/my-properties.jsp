@@ -64,7 +64,7 @@
 							<td>${tempProperty.rented_by}</td>
 							<td>${tempProperty.charge}</td>
 							<td><a href="${tempLink}" onclick="if (!(confirm('${(tempProperty.status)?'Already Paid, Cannot pay again':'Are you sure you want to make payment now?'}'))) return false">${(tempProperty.status)?'Paid':'Pay Now'}</a></td>
-							<td><a href="${updateLink}" onclick="if (!(confirm('Are you sure you want to update this property?'))) return false">Update</a></td>
+							<td><a href="${updateLink}" >Update</a></td>
 							<td><a href="${deleteLink}" onclick="if (!(confirm('Are you sure you want to delete this property?'))) return false">Delete</a></td>
 						</tr>
 					</q:forEach>

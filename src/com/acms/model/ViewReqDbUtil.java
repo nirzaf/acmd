@@ -3,6 +3,7 @@ package com.acms.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -198,34 +199,29 @@ public class ViewReqDbUtil {
 		}
 	}
 
-	// Accept or Reject
-	public void deleteRequest(int request_id) throws Exception {
-
+	// Delete View Request
+	public boolean deleteRequest(int request_id) throws SQLException {
 		Connection myConn = null;
 		PreparedStatement myStmt = null;
 		String sql = null;
+		// get connection to database
+		myConn = ds.getConnection();
 
-		try {
-			// get connection to database
-			myConn = ds.getConnection();
+		// create sql to delete/disable user
+		sql = "update tbl_view_request SET isDeleted = 0 Where request_id =?";
 
-			// create sql to delete/disable user
-			sql = "update tbl_view_request SET isDeleted = 0 Where request_id =?";
+		// prepare statement
+		myStmt = myConn.prepareStatement(sql);
 
-			System.out.println(" You executed the delete function on " + CurrentTime());
+		// set params
+		myStmt.setInt(1, request_id);
 
-			// prepare statement
-			myStmt = myConn.prepareStatement(sql);
-
-			// set params
-			myStmt.setInt(1, request_id);
-
-			// execute sql statement
-			myStmt.execute();
-		} finally {
-			// clean up JDBC code
-			c.close(myConn, myStmt, null);
-		}
+		// execute sql statement
+		int result = myStmt.executeUpdate();
+		if (result == 0)
+			return false;
+		else
+			return true;
 	}
 
 	public String CurrentTime() {

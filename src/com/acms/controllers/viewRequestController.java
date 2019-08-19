@@ -1,6 +1,8 @@
 package com.acms.controllers;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -13,13 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import com.acms.jdbc.GetRequest;
+import com.acms.jdbc.ViewRequest;
 import com.acms.model.ViewReqDbUtil;
 
 @WebServlet("/viewRequestController")
 public class viewRequestController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private ViewReqDbUtil viewRequest;
+	private ViewReqDbUtil viewReqDbUtil;
 
 	@Resource(name = "jdbc/ams")
 	private DataSource ds;
@@ -30,7 +33,7 @@ public class viewRequestController extends HttpServlet {
 		super.init();
 
 		try {
-			viewRequest = new ViewReqDbUtil(ds);
+			viewReqDbUtil = new ViewReqDbUtil(ds);
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}
@@ -56,10 +59,9 @@ public class viewRequestController extends HttpServlet {
 
 			case "ACCEPT":
 				acceptRequest(request, response);
-
-				/*
-				 * case "DELETE": deleteRequest(request, response);
-				 */
+				
+			case "VIEW":
+				viewRequest(request, response);
 
 			case "MYLIST":
 				myRequestList(request, response);
@@ -70,35 +72,24 @@ public class viewRequestController extends HttpServlet {
 	}
 
 	private void acceptRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+		if(request.getParameter("request_id")!=null) {
 		// read id from form data
 		int request_id = Integer.parseInt(request.getParameter("request_id"));
 
 		// update payment
-		viewRequest.viewRequestStatus(request_id);
+		viewReqDbUtil.viewRequestStatus(request_id);
 
 		// send them back to my Properties page
 		listRequest(request, response);
+		}
 	}
 
-	/*
-	 * private void deleteRequest(HttpServletRequest request, HttpServletResponse
-	 * response) throws Exception {
-	 * 
-	 * // read id from form data int request_id =
-	 * Integer.parseInt(request.getParameter("request_id"));
-	 * 
-	 * // delete database viewRequest.deleteRequest(request_id);
-	 * 
-	 * // send them back to my requests page myRequestList(request, response); }
-	 */
-
 	private void listRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+		if(request.getParameter("owner_id")!=null) {
 		int ownerId = Integer.parseInt(request.getParameter("owner_id"));
 
 		// get list from dbUtil
-		List<GetRequest> getRequest = viewRequest.getRequest(ownerId);
+		List<GetRequest> getRequest = viewReqDbUtil.getRequest(ownerId);
 
 		// add the requests to REQ_LIST
 		request.setAttribute("REQ_LIST", getRequest);
@@ -106,14 +97,35 @@ public class viewRequestController extends HttpServlet {
 		// send to the view page (jsp)
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/request-list.jsp");
 		dispatcher.forward(request, response);
+		}
+	}
+	
+	private void viewRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		// read id from form data
+		int property_id = Integer.parseInt(request.getParameter("property_id"));
+		String viewDate = request.getParameter("date_of_view");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDateTime now = LocalDateTime.now();
+		String currentDate = dtf.format(now);
+		int user_id = Integer.parseInt(request.getParameter("user_id").trim());
+
+		ViewRequest viewRequest = new ViewRequest(user_id, property_id, currentDate, viewDate);
+
+		// add to database
+		viewReqDbUtil.addViewRequest(viewRequest);
+
+		// send them back to "property list" page
+		myRequestList(request, response);
 	}
 
-	private void myRequestList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void myRequestList(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
+		if(request.getParameter("student_id")!= null) {
 		int student_id = Integer.parseInt(request.getParameter("student_id"));
 
 		// get list from dbUtil
-		List<GetRequest> getRequest = viewRequest.getMyRequest(student_id);
+		List<GetRequest> getRequest = viewReqDbUtil.getMyRequest(student_id);
 
 		// add the requests to REQ_LIST
 		request.setAttribute("MYREQ_LIST", getRequest);
@@ -121,5 +133,6 @@ public class viewRequestController extends HttpServlet {
 		// send to the view page (jsp)
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/my-requests.jsp");
 		dispatcher.forward(request, response);
+		}
 	}
 }

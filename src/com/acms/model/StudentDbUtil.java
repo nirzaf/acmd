@@ -66,7 +66,7 @@ public class StudentDbUtil {
 		}
 	}
 
-	public void addStudent(Student theStudent) throws Exception {
+	public boolean addStudent(Student theStudent) throws Exception {
 		Connection myConn = null;
 		PreparedStatement myStmt = null;
 
@@ -89,7 +89,11 @@ public class StudentDbUtil {
 			myStmt.setString(6, theStudent.getTelephone());
 
 			// execute sql insert
-			myStmt.execute();
+			int result = myStmt.executeUpdate();
+			if(result==0)
+				return false;
+			else
+				return true;
 		} finally {
 			// clean up JDBC objects
 			c.close(myConn, myStmt, null);
