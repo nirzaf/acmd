@@ -14,8 +14,7 @@ public class Property {
 	public Property() {
 		super();
 	}
-
-		
+	
 	public Property(int property_type, String address, int suitable_for, int is_available, int owner, int rented_by,
 			float charge,boolean isDeleted) {
 		super();
@@ -28,8 +27,18 @@ public class Property {
 		this.charge = charge;
 		this.isDeleted = isDeleted;
 	}
-
-
+	
+	public Property(int property_id, int property_type, String address, int suitable_for, int is_available,
+			int rented_by, float charge) {
+		super();
+		this.property_id = property_id;
+		this.property_type = property_type;
+		this.address = address;
+		this.suitable_for = suitable_for;
+		this.is_available = is_available;
+		this.rented_by = rented_by;
+		this.charge = charge;
+	}
 
 	public Property(int property_id, int property_type, String address, int suitable_for, int is_available, int owner, int rented_by,
 			float charge,boolean isDeleted) {

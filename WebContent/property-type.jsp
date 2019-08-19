@@ -11,19 +11,6 @@
 <body>
 
 	<%@include file="student-navigation.jsp"%>
-<%
-	// This scriplet function will validate the user logged in or not
-	String userName = null;
-	Cookie[] cookies = request.getCookies();
-	if (cookies != null) {
-		for (Cookie cookie : cookies) {
-			if (cookie.getName().equals("user_id"))
-				userName = cookie.getValue();
-		}
-	}
-	if (userName == null)
-		response.sendRedirect("userAccountControllerServlet");
-%>
 
 <!-- 	<input type="button" value="Add Student"
 		onclick="window.location.href='add-student-form.jsp'; return false;"

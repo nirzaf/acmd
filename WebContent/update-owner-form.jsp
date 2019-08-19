@@ -9,24 +9,10 @@
 
 <body>
 
-	<%@include file="student-navigation.jsp"%>
-	
-	<%
-		// This scriplet function will validate the user logged in or not
-		String userName = null;
-		Cookie[] cookies = request.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals("user_id"))
-					userName = cookie.getValue();
-			}
-		}
-		if (userName == null)
-			response.sendRedirect("userAccountControllerServlet");
-	%>
+	<%@include file="owners-navigation.jsp"%>
 	
 	<div id="container">
-		<h3>Owner's Profile</h3>
+		<h3>Update ${THE_OWNER.first_name}'s Profile</h3>
 		
 		<form action="ownerControllerServlet" method="GET">
 		
@@ -76,10 +62,6 @@
 		</form>
 		
 		<div style="clear: both;"></div>
-		
-		<p>
-			<a href="ownerControllerServlet">Back to List</a>
-		</p>
 	</div>
 </body>
 </html>

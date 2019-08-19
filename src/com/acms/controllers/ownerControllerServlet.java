@@ -1,33 +1,34 @@
 package com.acms.controllers;
 import java.io.IOException;
 import java.util.List;
+
+import javax.annotation.Resource;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
+
 import com.acms.jdbc.Owner;
+import com.acms.jdbc.Student;
 import com.acms.model.OwnerDbUtil;
-import com.acms.model.SqliteConUtil;
+import com.acms.model.ConUtil;
 
 @WebServlet("/ownerControllerServlet")
 public class ownerControllerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private OwnerDbUtil ownerDbUtil;
-
-	//private DataSource dataSource;
-	
-	SqliteConUtil conn = new SqliteConUtil();
+	@Resource(name="jdbc/ams")
+	private DataSource ds;
 
 	@Override
 	public void init() throws ServletException {
-		// TODO Auto-generated method stub
 		super.init();
-
 		try {
-			ownerDbUtil = new OwnerDbUtil(conn);
+			ownerDbUtil = new OwnerDbUtil(ds);
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}
@@ -58,6 +59,10 @@ public class ownerControllerServlet extends HttpServlet {
 			case "LOAD":
 				loadOwner(request, response);
 				break;
+				
+			case "PROFILE":
+				loadProfile(request, response);
+				break;
 
 			case "UPDATE":
 				updateOwner(request, response);
@@ -75,6 +80,23 @@ public class ownerControllerServlet extends HttpServlet {
 		}
 	}
 
+	private void loadProfile(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		// read owner id from form data
+		int theOwnerId = Integer.parseInt(request.getParameter("owner_id"));
+
+		// get owner from database (db util)
+		Owner theOwner = ownerDbUtil.getOwner(theOwnerId);
+
+		// place owner in the request attribute
+		request.setAttribute("OWNER", theOwner);
+
+		// send to owner's profile page
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/owner-profile.jsp");
+		dispatcher.forward(request, response);
+	}
+	
+	
 	private void deleteOwner(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		// read owner id from form data
@@ -103,8 +125,8 @@ public class ownerControllerServlet extends HttpServlet {
 		// perform update on database
 		ownerDbUtil.updateOwner(theOwner);
 
-		// send them back to the "list owners" page
-		listOwners(request, response);
+		// send them back to the owners profile page
+		loadProfile(request, response);
 
 	}
 

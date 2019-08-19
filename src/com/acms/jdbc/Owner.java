@@ -20,7 +20,17 @@ public class Owner {
 		this.telephone = telephone;
 		this.isDeleted = isDeleted;
 	}
-		
+	
+	public Owner(int owner_id, String first_name, String last_name, String address, String email, String telephone) {
+		super();
+		this.owner_id = owner_id;
+		this.first_name = first_name;
+		this.last_name = last_name;
+		this.address = address;
+		this.email = email;
+		this.telephone = telephone;
+	}
+	
 	public Owner(String first_name, String last_name, String address, String email, String telephone) {
 		super();
 		this.first_name = first_name;
@@ -86,8 +96,6 @@ public class Owner {
 
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
-	}
-	
-	
+	}	
 }
 

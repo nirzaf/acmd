@@ -3,33 +3,37 @@ package com.acms.controllers;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
+
+import com.acms.jdbc.GetRequest;
 import com.acms.jdbc.Student;
-import com.acms.model.SqliteConUtil;
 import com.acms.model.StudentDbUtil;
+import com.acms.model.ViewReqDbUtil;
 
 @WebServlet("/studentControllerServlet")
 public class studentControllerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private StudentDbUtil studentDbUtil;
-
-	//private DataSource dataSource;
+	private ViewReqDbUtil viewRequest;
+	@Resource(name="jdbc/ams")
+	private DataSource ds;
 	
-	SqliteConUtil conn = new SqliteConUtil();
-
 	@Override
 	public void init() throws ServletException {
 		// TODO Auto-generated method stub
 		super.init();
 
 		try {
-			studentDbUtil = new StudentDbUtil(conn);
+			studentDbUtil = new StudentDbUtil(ds);
+			viewRequest = new ViewReqDbUtil(ds);
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}
@@ -57,6 +61,10 @@ public class studentControllerServlet extends HttpServlet {
 				loadStudent(request, response);
 				break;
 
+			case "PROFILE":
+				loadProfile(request, response);
+				break;
+				
 			case "UPDATE":
 				updateStudent(request, response);
 				break;
@@ -64,6 +72,9 @@ public class studentControllerServlet extends HttpServlet {
 			case "DELETE":
 				deleteStudent(request, response);
 				break;
+				
+			case "DEL":
+				deleteRequest(request, response);
 
 			default:
 				listStudents(request, response);
@@ -101,11 +112,28 @@ public class studentControllerServlet extends HttpServlet {
 		// perform update on database
 		studentDbUtil.updateStudent(theStudent);
 
-		// send them back to the "list students" page
-		listStudents(request, response);
+		// send them back to the student's profile page
+		loadProfile(request, response);
 
 	}
 
+	private void loadProfile(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		// read student id from form data
+		int theStudentId = Integer.parseInt(request.getParameter("student_id"));
+
+		// get student from database (db util)
+		Student theStudent = studentDbUtil.getStudent(theStudentId);
+
+		// place student in the request attribute
+		request.setAttribute("STUDENT", theStudent);
+
+		// send to student's profile page
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/student-profile.jsp");
+		dispatcher.forward(request, response);
+	}
+	
+	
 	private void loadStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		// read student id from form data
@@ -131,6 +159,33 @@ public class studentControllerServlet extends HttpServlet {
 
 		// send to the view page (jsp)
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/list-students.jsp");
+		dispatcher.forward(request, response);
+	}
+	
+	private void deleteRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		// read id from form data
+		int request_id = Integer.parseInt(request.getParameter("request_id"));
+
+		// delete database
+		viewRequest.deleteRequest(request_id);
+
+		// send them back to my requests page
+		myRequestList(request, response);
+	}
+	
+	private void myRequestList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		int student_id = Integer.parseInt(request.getParameter("student_id"));
+
+		// get list from dbUtil
+		List<GetRequest> getRequest = viewRequest.getMyRequest(student_id);
+
+		// add the requests to REQ_LIST
+		request.setAttribute("MYREQ_LIST", getRequest);
+
+		// send to the view page (jsp)
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/my-requests.jsp");
 		dispatcher.forward(request, response);
 	}
 }
