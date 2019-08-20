@@ -6,7 +6,7 @@
 <head>
 <title>Owners List</title>
 <link type="text/css" rel="stylesheet" href="css/style.css">
-
+<script src="js/exceljs.js"></script>
 </head>
 
 <body>
@@ -14,7 +14,7 @@
 
 	<div id="container">
 		<div id="content">
-			<table>
+			<table id="tblData">
 				<tr>
 					<th>Owner Id</th>
 					<th>First Name</th>
@@ -52,6 +52,7 @@
 				</c:forEach>
 			</table>
 		</div>
+		<button onclick="exportTableToExcel('tblData', 'list-owners')">Export Table Data To Excel File</button>
 	</div>
 </body>
 </html>

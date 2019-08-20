@@ -6,6 +6,7 @@
 <head>
 <title> Users List </title>
 <link type="text/css" rel="stylesheet" href="css/style.css">
+<script src="js/exceljs.js"></script>
 </head>
 
 <body>
@@ -13,7 +14,7 @@
 	<%@include file="navigation.jsp"%>
 	<div id="container">		
 		<div id="content">
-			<table>
+			<table id="tblData">
 				<tr>
 					<th>User Id</th>
 					<th>Username</th>
@@ -43,6 +44,7 @@
 				</c:forEach>
 			</table>
 		</div>	
+				<button onclick="exportTableToExcel('tblData', 'list-users')">Export Table Data To Excel File</button>
 	</div>
 </body>
 </html>

@@ -6,15 +6,20 @@
 <head>
 <title>Students List</title>
 <link type="text/css" rel="stylesheet" href="css/style.css">
+<script src="js/exceljs.js"></script>
 </head>
 
 <body>
 
 	<%@include file="navigation.jsp"%>
-	
+	<%
+	 response.setHeader("Cache-Control", "no-cache");
+	 response.setHeader("Pragma", "no-cache");
+	 response.setHeader("Expires" ,"0");
+	%>
 	<div id="container">
 		<div id="content">
-			<table>
+			<table id="tblData">
 				<tr>
 					<th>Student Id</th>
 					<th>First Name</th>
@@ -52,6 +57,7 @@
 				</c:forEach>
 			</table>
 		</div>
+		<button onclick="exportTableToExcel('tblData', 'list-students')">Export Table Data To Excel File</button>
 	</div>
 </body></html>
 

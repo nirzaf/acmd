@@ -2,13 +2,24 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+<meta http-equiv="Pragma" content="no-cache"> 
+<meta http-equiv="Expires" content="-1"> 
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"> 
 <head>
 <title>Welcome to XYZ University's Accommodation Management Web
 	Application</title>
 
 <link type="text/css" rel="stylesheet" href="css/style.css">
 <link type="text/css" rel="stylesheet" href="css/add-student-style.css">
+<script type="text/javascript">
+window.onload = function() {
+    if(!window.location.hash) {
+        window.location = window.location + '#loaded';
+        window.location.reload();
+    }
+}
+</script>
 </head>
 
 <body>
@@ -16,6 +27,8 @@
 <%
 	 response.setHeader("Cache-Control", "no-cache");
 	 response.setHeader("Pragma", "no-cache");
+	 response.setHeader("Expires" ,"0");
+	 
 	 Cookie userIdCookie = new Cookie("user_id", null);
 	 Cookie userTypeCookie = new Cookie("user_type", null);
 	 userIdCookie.setMaxAge(0);
@@ -71,11 +84,10 @@
 						<td><label></label></td>
 						<td><input type="button" value="Sign-up" onclick="location.href='userAccountControllerServlet?command=SIGNUP';"/></td>
 					</tr>
-					<tr></tr>
+
 				</tbody>
 			</table>
 		</form>
 	</div>
 </body>
-
 </html>

@@ -6,19 +6,20 @@
 <head>
 <title>Properties</title>
 <link type="text/css" rel="stylesheet" href="css/style.css">
+<script src="js/exceljs.js"></script>
 </head>
 
 <body>
 	 <%@include file="navigation.jsp" %>
 
-	<form name="searchForm" action="propertyController" method="GET">
+	<form name="searchForm" action="propertyController" method="GET" >
 		<input type="text" name="search" class="form-control" value="${PARAMS}"
 			placeholder="Search Properties">
 		<button type="submit" value="search" class="add-student-button">Search</button>
 		<input type="checkbox" name="available" value="1" ${(CH==1)?'checked':''}> Show only available properties<br>
 		<div id="container">
 			<div id="content">
-				<table>
+				<table id="tblData">
 					<tr>
 						<th>Property Type</th>
 						<th>Address</th>
@@ -50,6 +51,7 @@
 					</q:forEach>
 				</table>
 			</div>
+			<button onclick="exportTableToExcel('tblData', 'list-properties')">Export Table Data To Excel File</button>
 		</div>
 	</form>
 </body>
