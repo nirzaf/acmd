@@ -9,7 +9,7 @@
 
 <body>
 
-	<%@include file="owners-navigation.jsp"%>
+	<%@include file="navigation.jsp"%>
 	
 	<div id="container">
 		<h3>Update ${THE_OWNER.first_name}'s Profile</h3>

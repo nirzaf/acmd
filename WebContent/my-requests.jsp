@@ -9,7 +9,7 @@
 </head>
 
 <body>
-	 <%@include file="student-navigation.jsp" %>
+	 <%@include file="navigation.jsp" %>
 
 	<form name="viewRequest" action="#" method="GET">
 		<div id="container">
@@ -17,7 +17,6 @@
 				<table>
 					<tr>
 						<th>Request Id</th>
-						<th>Requested by</th>
 						<th>Requested Property</th>
 						<th>Requested Date</th>
 						<th>Date of view</th>
@@ -28,11 +27,10 @@
 						<z:url var="deleteLink" value="studentControllerServlet">
 							<z:param name="command" value="DEL" />
 							<z:param name="request_id" value="${tempList.request_id}" />
-							<z:param name="student_id" value="<%= userId %>" />
+							<z:param name="student_id" value="<%= String.valueOf(userId) %>" />
 						</z:url>
 						<tr>
 							<td>${tempList.request_id}</td>
-							<td>${tempList.requested_by}</td>
 							<td>${tempList.requested_property}</td>
 							<td>${tempList.requested_date}</td>
 							<td>${tempList.date_of_view}</td>

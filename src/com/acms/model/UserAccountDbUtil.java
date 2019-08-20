@@ -319,6 +319,32 @@ public class UserAccountDbUtil {
 		}
 	}
 
+	public boolean updatePassword(UserAccount userAccount) throws Exception{
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+
+		try {
+			// get connection to database
+			myConn = ds.getConnection();
+
+			// create sql to get selected user
+			String sql = "UPDATE tbl_users SET password='"+ userAccount.getPassword() +"' where user_id='"+ userAccount.getUser_id()+"'";
+
+			// create prepared statement
+			myStmt = myConn.prepareStatement(sql);
+
+			// execute statement
+			int result = myStmt.executeUpdate();
+
+			// retrieve data from result set row
+			if(result > 0)return true; else return false;
+
+		} finally {
+			// clean up JDBC objects
+			c.close(myConn, myStmt, null);
+		}	
+	}
+	
 	// get user_type by user id
 	public int getUserType(int user_id) throws Exception {
 

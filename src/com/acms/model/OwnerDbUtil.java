@@ -75,17 +75,18 @@ public class OwnerDbUtil {
 
 			// create sql for insert
 			String sql = "insert into tbl_owner " 
-					+ "(first_name, last_name, address, email, telephone)"
-					+ "values (?, ?, ?, ?, ?)";
+					+ "(owner_id,first_name, last_name, address, email, telephone)"
+					+ "values (?, ?, ?, ?, ?, ?)";
 
 			myStmt = myConn.prepareStatement(sql);
 
 			// set the param values for the owner
-			myStmt.setString(1, theOwner.getFirst_name());
-			myStmt.setString(2, theOwner.getLast_name());
-			myStmt.setString(3, theOwner.getAddress());
-			myStmt.setString(4, theOwner.getEmail());
-			myStmt.setString(5, theOwner.getTelephone());
+			myStmt.setInt(1, theOwner.getOwner_id());
+			myStmt.setString(2, theOwner.getFirst_name());
+			myStmt.setString(3, theOwner.getLast_name());
+			myStmt.setString(4, theOwner.getAddress());
+			myStmt.setString(5, theOwner.getEmail());
+			myStmt.setString(6, theOwner.getTelephone());
 
 			// execute sql insert
 			int result = myStmt.executeUpdate();

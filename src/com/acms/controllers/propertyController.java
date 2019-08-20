@@ -287,14 +287,22 @@ public class propertyController extends HttpServlet {
 	private void listProperties(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// get list from dbUtil
 		String search = request.getParameter("search");
+		int checkBox = 0; 
+		if(request.getParameter("available")!=null) {
+		checkBox = Integer.parseInt(request.getParameter("available"));
+		System.out.print(checkBox);
+		}
+		
 		List<GetProperty> property;
 		if (isNullOrEmpty(search)) {
-			property = propertyDbUtil.getProperties("");
+			property = propertyDbUtil.getProperties("", checkBox);
 		} else {
-			property = propertyDbUtil.getProperties(search);
+			property = propertyDbUtil.getProperties(search, checkBox);
 		}
 
 		// add to the request
+		request.setAttribute("PARAMS", search);
+		request.setAttribute("CH", checkBox);
 		request.setAttribute("PROPERTY_LIST", property);
 
 		// send to the view page (jsp)

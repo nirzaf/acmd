@@ -10,32 +10,19 @@
 </head>
 
 <body>
-	<%@include file="admin-navigation.jsp"%>
-
-	<!-- conditional display field -->
-	<%
-		if (user_type == "3") {
-	%>
-	<form name="command">
-		<input type="button" value="Add Owner"
-			onclick="window.location.href='add-owner-form.jsp'; return false;"
-			class="add-student-button">
-	</form>
-
-	<%
-		}
-	%>
+	<%@include file="navigation.jsp"%>
 
 	<div id="container">
 		<div id="content">
 			<table>
 				<tr>
+					<th>Owner Id</th>
 					<th>First Name</th>
 					<th>Last Name</th>
 					<th>Address</th>
 					<th>Email</th>
 					<th>Telephone</th>
-					<th>Action</th>
+					<th>Action<>
 				</tr>
 				<c:forEach var="tempOwner" items="${OWNER_LIST}">
 
@@ -52,13 +39,13 @@
 					</c:url>
 
 					<tr>
+						<td>${tempOwner.owner_id}</td>
 						<td>${tempOwner.first_name}</td>
 						<td>${tempOwner.last_name}</td>
 						<td>${tempOwner.address}</td>
 						<td>${tempOwner.email}</td>
 						<td>${tempOwner.telephone}</td>
-						<td><a href="${tempLink}">Update</a> | <a
-							href="${deleteLink}"
+						<td><a href="${tempLink}">Update</a> | <a href="${deleteLink}"
 							onclick="if (!(confirm('Are you sure you want to delete this owner?'))) return false">Delete</a>
 						</td>
 					</tr>

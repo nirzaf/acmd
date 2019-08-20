@@ -9,7 +9,7 @@
 </head>
 
 <body>
-	 <%@include file="owners-navigation.jsp" %>
+	 <%@include file="navigation.jsp" %>
 
 	<form name="viewRequestForm" action="propertyController" method="GET">
 		<div id="container">

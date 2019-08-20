@@ -10,7 +10,7 @@
 
 <body>
 
-	<%@include file="student-navigation.jsp"%>
+	<%@include file="navigation.jsp"%>
 
 	<div id="container">
 		<h3>${STUDENT.first_name}'s Profile</h3>

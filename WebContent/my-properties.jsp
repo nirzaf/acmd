@@ -9,7 +9,7 @@
 </head>
 
 <body>
-	<%@include file="owners-navigation.jsp"%>
+	<%@include file="navigation.jsp"%>
 
 	<!-- conditional display field -->
 	<form name="command">

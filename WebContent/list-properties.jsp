@@ -9,12 +9,13 @@
 </head>
 
 <body>
-	 <%@include file="student-navigation.jsp" %>
+	 <%@include file="navigation.jsp" %>
 
 	<form name="searchForm" action="propertyController" method="GET">
-		<input type="text" name="search" class="form-control"
+		<input type="text" name="search" class="form-control" value="${PARAMS}"
 			placeholder="Search Properties">
 		<button type="submit" value="search" class="add-student-button">Search</button>
+		<input type="checkbox" name="available" value="1" ${(CH==1)?'checked':''}> Show only available properties<br>
 		<div id="container">
 			<div id="content">
 				<table>

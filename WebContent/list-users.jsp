@@ -10,8 +10,7 @@
 
 <body>
 	
-	<%@include file="admin-navigation.jsp"%>
-			
+	<%@include file="navigation.jsp"%>
 	<div id="container">		
 		<div id="content">
 			<table>
