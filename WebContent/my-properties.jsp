@@ -9,7 +9,7 @@
 </head>
 
 <body>
-	<%@include file="owners-navigation.jsp"%>
+	<%@include file="navigation.jsp"%>
 
 	<!-- conditional display field -->
 	<form name="command">
@@ -33,6 +33,8 @@
 						<th>Currently Rented By</th>
 						<th>Charge</th>
 						<th>Payment</th>
+						<th>Update</th>
+						<th>Delete</th>
 					</tr>
 					<q:forEach var="tempProperty" items="${PROPERTY}">
 
@@ -41,6 +43,19 @@
 							<q:param name="property_id" value="${tempProperty.property_id}" />
 							<q:param name="owner_id" value="${tempProperty.owner_id}" />
 						</q:url>
+						
+						<q:url var="updateLink" value="propertyController">
+							<q:param name="command" value="UPDATE" />
+							<q:param name="property_id" value="${tempProperty.property_id}" />
+							<q:param name="owner_id" value="${tempProperty.owner_id}" />							
+						</q:url>
+						
+						<q:url var="deleteLink" value="propertyController">
+							<q:param name="command" value="DELETE" />
+							<q:param name="property_id" value="${tempProperty.property_id}" />
+							<q:param name="owner_id" value="${tempProperty.owner_id}" />							
+						</q:url>
+						
 						<tr>
 							<td>${tempProperty.property_type}</td>
 							<td>${tempProperty.address}</td>
@@ -48,8 +63,9 @@
 							<td>${tempProperty.is_available}</td>
 							<td>${tempProperty.rented_by}</td>
 							<td>${tempProperty.charge}</td>
-							<td><a href="${tempLink}">${(tempProperty.status)?'Paid':'Pay Now'}</a>
-							</td>
+							<td><a href="${tempLink}" onclick="if (!(confirm('${(tempProperty.status)?'Already Paid, Cannot pay again':'Are you sure you want to make payment now?'}'))) return false">${(tempProperty.status)?'Paid':'Pay Now'}</a></td>
+							<td><a href="${updateLink}" >Update</a></td>
+							<td><a href="${deleteLink}" onclick="if (!(confirm('Are you sure you want to delete this property?'))) return false">Delete</a></td>
 						</tr>
 					</q:forEach>
 				</table>

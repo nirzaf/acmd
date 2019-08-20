@@ -10,22 +10,19 @@
 
 <body>
 
-	<%@include file="admin-navigation.jsp"%>
-
-<!-- 	<input type="button" value="Add Student"
-		onclick="window.location.href='add-student-form.jsp'; return false;"
-		class="add-student-button"> -->
-		
+	<%@include file="navigation.jsp"%>
+	
 	<div id="container">
 		<div id="content">
 			<table>
 				<tr>
+					<th>Student Id</th>
 					<th>First Name</th>
 					<th>Last Name</th>
 					<th>Address</th>
 					<th>Email</th>
 					<th>Telephone</th>
-					<th>Action</th>
+					<th>Action<>
 				</tr>
 				<c:forEach var="tempStudent" items="${STUDENT_LIST}">
 
@@ -42,13 +39,13 @@
 					</c:url>
 
 					<tr>
+						<td>${tempStudent.student_id}</td>
 						<td>${tempStudent.first_name}</td>
 						<td>${tempStudent.last_name}</td>
 						<td>${tempStudent.address}</td>
 						<td>${tempStudent.email}</td>
 						<td>${tempStudent.telephone}</td>
-						<td><a href="${tempLink}">Update</a> | <a
-							href="${deleteLink}"
+						<td><a href="${tempLink}">Update</a> | <a href="${deleteLink}"
 							onclick="if (!(confirm('Are you sure you want to delete this student?'))) return false">Delete</a>
 						</td>
 					</tr>

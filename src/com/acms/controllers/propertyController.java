@@ -17,10 +17,12 @@ import javax.sql.DataSource;
 import com.acms.jdbc.GetProperty;
 import com.acms.jdbc.Property;
 import com.acms.jdbc.Property_Type;
+import com.acms.jdbc.Student;
 import com.acms.jdbc.ViewRequest;
 import com.acms.model.GetPropertyDbUtil;
 import com.acms.model.PropertyDbUtil;
 import com.acms.model.PropertyTypeDbUtil;
+import com.acms.model.StudentDbUtil;
 import com.acms.model.ViewReqDbUtil;
 import com.acms.model.ConUtil;
 
@@ -33,6 +35,7 @@ public class propertyController extends HttpServlet {
 
 	private GetPropertyDbUtil propertyDbUtil;
 	private PropertyTypeDbUtil propertyTypeDbUtil;
+	private StudentDbUtil studentDbUtil;
 	private PropertyDbUtil dbUtil;
 	private ViewReqDbUtil viewReqDbUtil;
 
@@ -44,6 +47,7 @@ public class propertyController extends HttpServlet {
 		try {
 			propertyDbUtil = new GetPropertyDbUtil(ds);
 			propertyTypeDbUtil = new PropertyTypeDbUtil(ds);
+			studentDbUtil = new StudentDbUtil(ds);
 			dbUtil = new PropertyDbUtil(ds);
 			viewReqDbUtil = new ViewReqDbUtil(ds);
 		} catch (Exception ex) {
@@ -84,13 +88,25 @@ public class propertyController extends HttpServlet {
 			case "LIST_OF_TYPES":
 				listProperty_types(request, response);
 				break;
-				
+
 			case "PAY":
 				makePayment(request, response);
 				break;
 
 			case "ADD":
 				addProperty(request, response);
+				break;
+
+			case "EDIT":
+				updateProperty(request, response);
+				break;
+
+			case "UPDATE":
+				loadMyProperty(request, response);
+				break;
+
+			case "DELETE":
+				deleteProperty(request, response);
 				break;
 
 			default:
@@ -112,7 +128,6 @@ public class propertyController extends HttpServlet {
 		int user_id = Integer.parseInt(request.getParameter("user_id").trim());
 
 		ViewRequest viewRequest = new ViewRequest(user_id, property_id, currentDate, viewDate);
-		System.out.println(user_id + "  " + property_id + "  " + currentDate + "  " + viewDate);
 
 		// add to database
 		viewReqDbUtil.addViewRequest(viewRequest);
@@ -157,6 +172,52 @@ public class propertyController extends HttpServlet {
 		}
 	}
 
+	private void deleteProperty(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		// read id from form data
+		int property_id = Integer.parseInt(request.getParameter("property_id"));
+
+		// update payment
+		dbUtil.deleteProperty(property_id);
+
+		// send them back to my Properties page
+		myProperties(request, response);
+	}
+
+	private void updateProperty(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		try {
+			// read id from form data
+			int property_id = Integer.parseInt(request.getParameter("property_id"));
+			int property_type = Integer.parseInt(request.getParameter("property_type").trim());
+			String address = request.getParameter("address");
+			int suitable_for = Integer.parseInt(request.getParameter("suitable_for").trim());
+			int is_available = 0 ; 
+			int rented_by = Integer.parseInt(request.getParameter("rented_by").trim());
+			if(rented_by ==0) is_available = 1; 			
+			float charge = Float.parseFloat(request.getParameter("charge").trim());
+			
+			String input = " Property Id : " + request.getParameter("property_id") +
+						   " Property Type : " + request.getParameter("property_type") +
+						   " address : "  + request.getParameter("address") +
+						   " suitable_for : " + suitable_for +
+						   " is_available " + is_available +
+						   " rented_by " + request.getParameter("rented_by") +
+						   " charge "  + request.getParameter("charge");
+			
+			System.out.println(input);
+			
+			
+			Property theProperty = new Property(property_id, property_type, address, suitable_for, is_available, rented_by, charge);
+			
+			dbUtil.updateProperty(theProperty);
+			
+			// send them back to my Properties page
+			myProperties(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void loadProperty(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		// read id from form data
@@ -170,6 +231,28 @@ public class propertyController extends HttpServlet {
 
 		// send to jsp page: update-property-form.jsp
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/update-property-form.jsp");
+
+		dispatcher.forward(request, response);
+	}
+
+	private void loadMyProperty(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		// read id from form data
+		int propertyId = Integer.parseInt(request.getParameter("property_id"));
+
+		// get property from database (db util)
+		Property theProperty = dbUtil.loadProperty(propertyId);
+		GetProperty property = dbUtil.getProperty(propertyId);
+		List<Student> student = studentDbUtil.getStudents();
+
+		// place property in the request attribute
+		request.setAttribute("MYPROPERTY", theProperty);
+		request.setAttribute("PROPERTY", property);
+		// add students to the request
+		request.setAttribute("STUDENT_LIST", student);
+
+		// send to jsp page: update-property-form.jsp
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/update-my-property.jsp");
 
 		dispatcher.forward(request, response);
 	}
@@ -193,8 +276,6 @@ public class propertyController extends HttpServlet {
 
 		property = propertyDbUtil.getMyProperties(Integer.parseInt(user_id));
 
-		System.out.println("Your user id now :  " + user_id);
-
 		// add to the request
 		request.setAttribute("PROPERTY", property);
 
@@ -206,14 +287,22 @@ public class propertyController extends HttpServlet {
 	private void listProperties(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// get list from dbUtil
 		String search = request.getParameter("search");
+		int checkBox = 0; 
+		if(request.getParameter("available")!=null) {
+		checkBox = Integer.parseInt(request.getParameter("available"));
+		System.out.print(checkBox);
+		}
+		
 		List<GetProperty> property;
 		if (isNullOrEmpty(search)) {
-			property = propertyDbUtil.getProperties("");
+			property = propertyDbUtil.getProperties("", checkBox);
 		} else {
-			property = propertyDbUtil.getProperties(search);
+			property = propertyDbUtil.getProperties(search, checkBox);
 		}
 
 		// add to the request
+		request.setAttribute("PARAMS", search);
+		request.setAttribute("CH", checkBox);
 		request.setAttribute("PROPERTY_LIST", property);
 
 		// send to the view page (jsp)

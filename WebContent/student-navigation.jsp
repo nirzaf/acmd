@@ -63,8 +63,8 @@ body {
 		<div class="topnav">
 			<a href="studentControllerServlet?command=PROFILE&student_id=<%=userId%>">My Profile</a> 
 			<a href="propertyController">Properties </a> 
-			<a href="#contact">Payment </a> 
-			<a href="#about">About </a>
+			<a href="viewRequestController?command=MYLIST&student_id=<%=userId%>">My View Requests </a> 
+			<a href="userAccountControllerServlet?command=CHANGE">Change Password</a>
 			<a href="userAccountControllerServlet">Logout</a>
 		</div>
 	</div>

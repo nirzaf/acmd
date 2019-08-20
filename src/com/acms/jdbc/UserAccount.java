@@ -33,7 +33,13 @@ public class UserAccount {
 		this.password = password;
 		this.user_type = user_type;
 	}
-	
+		
+	public UserAccount(int user_id, String password) {
+		super();
+		this.user_id = user_id;
+		this.password = password;
+	}
+
 	public int getUser_id() {
 		return user_id;
 	}

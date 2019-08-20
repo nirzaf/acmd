@@ -65,7 +65,7 @@ public class OwnerDbUtil {
 		}
 	}
 
-	public void addOwner(Owner theOwner) throws Exception {
+	public boolean addOwner(Owner theOwner) throws Exception {
 		Connection myConn = null;
 		PreparedStatement myStmt = null;
 
@@ -75,20 +75,25 @@ public class OwnerDbUtil {
 
 			// create sql for insert
 			String sql = "insert into tbl_owner " 
-					+ "(first_name, last_name, address, email, telephone)"
-					+ "values (?, ?, ?, ?, ?)";
+					+ "(owner_id,first_name, last_name, address, email, telephone)"
+					+ "values (?, ?, ?, ?, ?, ?)";
 
 			myStmt = myConn.prepareStatement(sql);
 
 			// set the param values for the owner
-			myStmt.setString(1, theOwner.getFirst_name());
-			myStmt.setString(2, theOwner.getLast_name());
-			myStmt.setString(3, theOwner.getAddress());
-			myStmt.setString(4, theOwner.getEmail());
-			myStmt.setString(5, theOwner.getTelephone());
+			myStmt.setInt(1, theOwner.getOwner_id());
+			myStmt.setString(2, theOwner.getFirst_name());
+			myStmt.setString(3, theOwner.getLast_name());
+			myStmt.setString(4, theOwner.getAddress());
+			myStmt.setString(5, theOwner.getEmail());
+			myStmt.setString(6, theOwner.getTelephone());
 
 			// execute sql insert
-			myStmt.execute();
+			int result = myStmt.executeUpdate();
+			if(result ==0 )
+				return false;
+			else
+				return true;
 		} finally {
 			// clean up JDBC objects
 			c.close(myConn, myStmt, null);
@@ -182,7 +187,7 @@ public class OwnerDbUtil {
 			// get connection to database
 			myConn = ds.getConnection();
 			// create sql to get selected student
-			String sql = "select first_name from tbl_owners where owner_id=?";
+			String sql = "select first_name from tbl_owner where owner_id=?";
 
 			// create prepared statement
 			myStmt = myConn.prepareStatement(sql);
@@ -195,7 +200,6 @@ public class OwnerDbUtil {
 
 			// retrieve data from result set row	
 			while (myRs.next()) {
-				System.out.println(" Your in If condition true ");
 				return true;
 			} 
 			return false;

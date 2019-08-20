@@ -11,7 +11,7 @@
 
 <body>
 
-	<%@include file="owners-navigation.jsp"%>
+	<%@include file="navigation.jsp"%>
 
 	<div id="container">
 		<h3>Add Property</h3>

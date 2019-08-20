@@ -21,7 +21,7 @@ public class GetPropertyDbUtil {
 		ds = dataSource;
 	}
 
-	public List<GetProperty> getProperties(String search) throws Exception {
+	public List<GetProperty> getProperties(String search, int Available) throws Exception {
 
 		List<GetProperty> properties = new ArrayList<>();
 		Connection myConn = null;
@@ -33,19 +33,37 @@ public class GetPropertyDbUtil {
 			// get a connection
 			if (isNullOrEmpty(search)) {
 				myConn = ds.getConnection();
-
+				
+				if(Available == 0) {
 				sql = "SELECT tbl_property.property_id AS property_id, " + "tbl_property_types.type_name AS type_name, "
 						+ "tbl_property.address AS address, tbl_property.suitable_for AS suitable_for, "
 						+ "CASE (tbl_property.is_available) "
 						+ "WHEN '1' THEN 'available' ELSE 'occupied' END AS availability, "
-						+ "tbl_owner.first_name AS owner, " + "CASE tbl_property.rented_by "
+						+ "tbl_owner.first_name AS owner, " 
+						+ "CASE tbl_property.rented_by "
 						+ "WHEN '0' THEN 'none' ELSE tbl_student.first_name END as rented_by, "
-						+ "tbl_property.charge AS rent " + "FROM tbl_property INNER JOIN tbl_property_types ON "
+						+ "tbl_property.charge AS rent " 
+						+ "FROM tbl_property INNER JOIN tbl_property_types ON "
 						+ "tbl_property_types.type_id = tbl_property.property_type "
 						+ "INNER JOIN tbl_owner ON  tbl_property.owner = tbl_owner.owner_id "
 						+ "LEFT JOIN tbl_student ON tbl_property.rented_by = tbl_student.student_id "
 						+ "WHERE tbl_property.isDeleted = 1 AND tbl_property.status = 1";
-
+				}else {
+					sql = "SELECT tbl_property.property_id AS property_id, " + "tbl_property_types.type_name AS type_name, "
+							+ "tbl_property.address AS address, tbl_property.suitable_for AS suitable_for, "
+							+ "CASE (tbl_property.is_available) "
+							+ "WHEN '1' THEN 'available' ELSE 'occupied' END AS availability, "
+							+ "tbl_owner.first_name AS owner, " 
+							+ "CASE tbl_property.rented_by "
+							+ "WHEN '0' THEN 'none' ELSE tbl_student.first_name END as rented_by, "
+							+ "tbl_property.charge AS rent " 
+							+ "FROM tbl_property INNER JOIN tbl_property_types ON "
+							+ "tbl_property_types.type_id = tbl_property.property_type "
+							+ "INNER JOIN tbl_owner ON  tbl_property.owner = tbl_owner.owner_id "
+							+ "LEFT JOIN tbl_student ON tbl_property.rented_by = tbl_student.student_id "
+							+ "WHERE tbl_property.isDeleted = 1 AND tbl_property.status = 1 "
+							+ "AND tbl_property.is_available =1";
+				}
 				myStmt = myConn.prepareStatement(sql);
 
 				// execute query
@@ -72,22 +90,57 @@ public class GetPropertyDbUtil {
 				}
 			} else {
 				myConn = ds.getConnection();
-				sql = "SELECT tbl_property.property_id AS property_id, " + "tbl_property_types.type_name AS type_name, "
-						+ "tbl_property.address AS address, tbl_property.suitable_for AS suitable_for, "
+				if(Available == 0) {
+				sql = 	"SELECT tbl_property.property_id AS property_id, " 
+						+ "tbl_property_types.type_name AS type_name, "
+						+ "tbl_property.address AS address, "
+						+ "tbl_property.suitable_for AS suitable_for, "
 						+ "CASE (tbl_property.is_available) "
-						+ "WHEN '1' THEN 'available' ELSE 'Occupied' END AS availability, "
-						+ "tbl_owner.first_name AS owner, " + "CASE tbl_property.rented_by "
+						+ "WHEN '1' THEN 'available' ELSE 'occupied' END AS availability, "
+						+ "tbl_owner.first_name AS owner, " 
+						+ "CASE tbl_property.rented_by "
 						+ "WHEN '0' THEN 'none' ELSE tbl_student.first_name END as rented_by, "
-						+ "tbl_property.charge AS rent " + "FROM tbl_property INNER JOIN tbl_property_types ON "
+						+ "tbl_property.charge AS rent " 
+						+ "FROM tbl_property INNER JOIN tbl_property_types ON "
 						+ "tbl_property_types.type_id = tbl_property.property_type "
 						+ "INNER JOIN tbl_owner ON  tbl_property.owner = tbl_owner.owner_id "
 						+ "LEFT JOIN tbl_student ON  tbl_property.rented_by = tbl_student.student_id "
-						+ "WHERE tbl_property.isDeleted = 1 AND tbl_property.status = 1 AND tbl_property_types.type_name LIKE ? OR tbl_property.address LIKE ?";
-
+						+ "WHERE tbl_property.isDeleted = 1 AND tbl_property.status = 1 "
+						+ "AND tbl_property_types.type_name LIKE ? "
+						+ "OR tbl_property.address LIKE ? "
+						+ "OR tbl_student.first_name LIKE ? "
+						+ "OR tbl_owner.first_name LIKE ? "
+						+ "OR tbl_property.suitable_for LIKE ? ";
+				}else {
+					sql = 	"SELECT tbl_property.property_id AS property_id, " 
+							+ "tbl_property_types.type_name AS type_name, "
+							+ "tbl_property.address AS address, "
+							+ "tbl_property.suitable_for AS suitable_for, "
+							+ "CASE (tbl_property.is_available) "
+							+ "WHEN '1' THEN 'available' ELSE 'occupied' END AS availability, "
+							+ "tbl_owner.first_name AS owner, " 
+							+ "CASE tbl_property.rented_by "
+							+ "WHEN '0' THEN 'none' ELSE tbl_student.first_name END as rented_by, "
+							+ "tbl_property.charge AS rent " 
+							+ "FROM tbl_property INNER JOIN tbl_property_types ON "
+							+ "tbl_property_types.type_id = tbl_property.property_type "
+							+ "INNER JOIN tbl_owner ON  tbl_property.owner = tbl_owner.owner_id "
+							+ "LEFT JOIN tbl_student ON  tbl_property.rented_by = tbl_student.student_id "
+							+ "WHERE tbl_property.isDeleted = 1 AND tbl_property.status = 1 "
+							+ "AND tbl_property.is_available = 1 "
+							+ "AND tbl_property_types.type_name LIKE ? "
+							+ "OR tbl_property.address LIKE ? "
+							+ "OR tbl_student.first_name LIKE ? "
+							+ "OR tbl_owner.first_name LIKE ? "
+							+ "OR tbl_property.suitable_for LIKE ? ";
+				}
 				myStmt = myConn.prepareStatement(sql);
 
 				myStmt.setString(1,"%" +search +"%");
 				myStmt.setString(2,"%" +search +"%");
+				myStmt.setString(3,"%" +search +"%");
+				myStmt.setString(4,"%" +search +"%");
+				myStmt.setString(5,"%" +search +"%");
 				
 				// execute query
 				myRs = myStmt.executeQuery();
@@ -133,7 +186,7 @@ public class GetPropertyDbUtil {
 				String sql = "SELECT tbl_property.property_id AS property_id, " 
 						+ "tbl_property_types.type_name AS type_name, "
 						+ "tbl_property.address AS address, tbl_property.suitable_for AS suitable_for, "
-						+ "CASE (tbl_property.is_available) WHEN '1' THEN 'available' ELSE 'Occupied' END AS availability, "
+						+ "CASE (tbl_property.is_available) WHEN '1' THEN 'available' ELSE 'occupied' END AS availability, "
 						+ "tbl_property.owner AS owner_id, "
 						+ "tbl_owner.first_name AS owner, " 
 						+ "CASE tbl_property.rented_by WHEN '0' THEN 'none' ELSE tbl_student.first_name END AS rented_by, "

@@ -31,11 +31,6 @@ public class UserAccountDbUtil {
 		String Username = theUser.getUsername();
 		String Password = theUser.getPassword();
 
-		/*
-		 * System.out.println("User entered username : " + Username);
-		 * System.out.println("User entered password : " + Password);
-		 */
-
 		// Temporary Strings to hold username and password fetched from database
 		String dbUsername = "";
 		String dbPassword = "";
@@ -57,14 +52,8 @@ public class UserAccountDbUtil {
 				dbUsername = myRs.getString("username");
 				dbPassword = myRs.getString("password");
 
-				/*
-				 * System.out.println("username retrieved from db : " + dbUsername);
-				 * System.out.println("password retrieved from db : " + dbPassword);
-				 */
-
 				// Validate the username and password by matching with db username and password
 				if (dbUsername.equals(Username) && dbPassword.equals(Password)) {
-					System.out.println("Username and Password Validated");
 					return true;
 				}
 			}
@@ -122,7 +111,7 @@ public class UserAccountDbUtil {
 	}
 
 	// create user account
-	public void createUser(UserAccount theUser) throws Exception {
+	public boolean createUser(UserAccount theUser) throws Exception {
 		Connection myConn = null;
 		PreparedStatement myStmt = null;
 
@@ -140,7 +129,11 @@ public class UserAccountDbUtil {
 			myStmt.setString(2, theUser.getPassword());
 			myStmt.setInt(3, theUser.getUser_type());
 			// execute sql insert
-			myStmt.execute();
+			int result = myStmt.executeUpdate();
+			if(result==0)
+				return false; 
+			else 
+				return true;
 		} finally {
 			// clean up JDBC objects
 			c.close(myConn, myStmt, null);
@@ -326,6 +319,32 @@ public class UserAccountDbUtil {
 		}
 	}
 
+	public boolean updatePassword(UserAccount userAccount) throws Exception{
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+
+		try {
+			// get connection to database
+			myConn = ds.getConnection();
+
+			// create sql to get selected user
+			String sql = "UPDATE tbl_users SET password='"+ userAccount.getPassword() +"' where user_id='"+ userAccount.getUser_id()+"'";
+
+			// create prepared statement
+			myStmt = myConn.prepareStatement(sql);
+
+			// execute statement
+			int result = myStmt.executeUpdate();
+
+			// retrieve data from result set row
+			if(result > 0)return true; else return false;
+
+		} finally {
+			// clean up JDBC objects
+			c.close(myConn, myStmt, null);
+		}	
+	}
+	
 	// get user_type by user id
 	public int getUserType(int user_id) throws Exception {
 

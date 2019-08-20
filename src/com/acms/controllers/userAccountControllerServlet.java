@@ -33,7 +33,8 @@ public class userAccountControllerServlet extends HttpServlet {
 	private UserAccountDbUtil userAccountDbUtil;
 	private StudentDbUtil studentDbUtil;
 	private OwnerDbUtil ownerDbUtil;
-	private HttpSession session;
+	private Cookie userIdCookie;
+	private Cookie userTypeCookie;
 
 	@Override
 	public void init() throws ServletException {
@@ -54,7 +55,6 @@ public class userAccountControllerServlet extends HttpServlet {
 		try {
 			// read the "command" parameter
 			String theCommand = request.getParameter("command");
-			//System.out.println(theCommand);
 			// if the command is missing, then default to login user
 			if (theCommand == null) {
 				theCommand = "LOGIN";
@@ -85,10 +85,9 @@ public class userAccountControllerServlet extends HttpServlet {
 		try {
 			// read the "command" parameter
 			String theCommand = request.getParameter("command");
-			//System.out.println(theCommand);
 			// if the command is missing, then default to listing users
 			if (theCommand == null) {
-				theCommand = "LOGINPAGE";
+				theCommand = "LOGOUT";
 			}
 
 			// route to the appropriate method
@@ -109,6 +108,19 @@ public class userAccountControllerServlet extends HttpServlet {
 			case "LOGOUT":
 				signOut(request, response);
 				break;
+			case "CHANGE":
+				changePW(request, response);
+				break;
+			case "CHANGEO":
+				changeOPW(request, response);
+				break;
+			case "CHANGE_PW":
+				changePassword(request, response);
+				break;
+			case "CHANGE_OPW":
+				changeOPassword(request, response);
+				break;
+				
 			default:
 				loginPage(request, response);
 				break;
@@ -124,6 +136,18 @@ public class userAccountControllerServlet extends HttpServlet {
 		dispatcher.forward(request, response);
 	}
 
+	// method for change password page controller route
+	private void changePW(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/change-student-password.jsp");
+		dispatcher.forward(request, response);
+	}
+	
+	// method for change password page controller route
+	private void changeOPW(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/change-owners-password.jsp");
+		dispatcher.forward(request, response);
+	}
+	
 	// method for sign up page controller route
 	private void signUpPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/sign-up-form.jsp");
@@ -132,15 +156,15 @@ public class userAccountControllerServlet extends HttpServlet {
 
 	// method for sign up page controller route
 	private void signOut(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Cookie[] cookies = request.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				cookie.setMaxAge(0);
+			if(userIdCookie !=null && userTypeCookie !=null) {
+			userIdCookie.setMaxAge(0);
+			userTypeCookie.setMaxAge(0);
 			}
-		}
-		// response.sendRedirect("login-form.jsp");
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/login-form.jsp");
-		dispatcher.forward(request, response);
+			
+			response.setHeader("cache", "cookies");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/login-form.jsp"); 
+			dispatcher.forward(request, response);	 
+		
 	}
 
 	// method for authentication controller
@@ -178,35 +202,21 @@ public class userAccountControllerServlet extends HttpServlet {
 				String userId = Integer.toString(user_id);
 				String userType = Integer.toString(user_type);
 
-				// create new session
-				session = request.getSession(true);
-				session.setMaxInactiveInterval(1500);
-				session.setAttribute("username", username);
-				session.setAttribute("user_id", user_id);
-				session.setAttribute("user_type", user_type);
-
-				request.setAttribute("username", username);
-				request.setAttribute("user_id", user_id);
-				request.setAttribute("user_type", user_type);
-										
-				Cookie userIdCookie = new Cookie("user_id", userId);
-				Cookie userTypeCookie = new Cookie("user_type", userType);
-				Cookie usernameCookie = new Cookie("username", username);
+				if(userIdCookie !=null)userIdCookie = null; 
+				if(userTypeCookie !=null)userTypeCookie = null; 
+				userIdCookie = new Cookie("user_id", userId);
+				userTypeCookie = new Cookie("user_type", userType);
 				
 				// setting cookie to expiry in 60 mins
-				userIdCookie.setMaxAge(60 * 60);
-				userTypeCookie.setMaxAge(60 * 60);
-				usernameCookie.setMaxAge(60 * 60);
+				userIdCookie.setMaxAge(60 * 360);
+				userTypeCookie.setMaxAge(60 * 360);
 				
 				response.addCookie(userIdCookie);
 				response.addCookie(userTypeCookie);	
-				response.addCookie(usernameCookie);	
-				
-				request.setAttribute("user_id", user_id);
+
 			
 				if (user_id > 0 && user_type == 1) {
 					boolean isExist = studentDbUtil.isStudentExist(user_id);
-					System.out.println(isExist);
 
 					if (!isExist) {
 						int student_id = user_id;
@@ -260,7 +270,6 @@ public class userAccountControllerServlet extends HttpServlet {
 					dispatcher.forward(request, response);
 				} else {
 					// then it is the admin account
-					// get owner from database (db util)
 					theUsers = userAccountDbUtil.getUserAccounts();
 
 					// place owner in the request attribute
@@ -306,7 +315,68 @@ public class userAccountControllerServlet extends HttpServlet {
 			throw new ServletException(ex);
 		}
 	}
+	
+	// controller to change students password account
+		private void changePassword(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
+			try {
+				int userId = Integer.parseInt(request.getParameter("user_id"));
+				String password = request.getParameter("password");
+
+				// create a new user object
+				UserAccount theUser = new UserAccount(userId, password);
+
+				// update password for relevant user_id
+				boolean result = userAccountDbUtil.updatePassword(theUser);
+
+				String message = "Password Updated Successfully";
+				String error = "Something went wrong, please try again";
+				
+				if(result)
+				request.setAttribute("SUCCESS", message);
+				else
+				request.setAttribute("SUCCESS", error);
+				
+				// send back to the login page
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/change-student-password.jsp");
+				dispatcher.forward(request, response);
+
+			} catch (Exception ex) {
+				throw new ServletException(ex);
+			}
+		}
+
+		// controller to change owners password account
+		private void changeOPassword(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+			try {
+				int userId = Integer.parseInt(request.getParameter("user_id"));
+				String password = request.getParameter("password");
+
+				// create a new user object
+				UserAccount theUser = new UserAccount(userId, password);
+
+				// update password for relevant user_id
+				boolean result = userAccountDbUtil.updatePassword(theUser);
+
+				String message = "Password Updated Successfully";
+				String error = "Something went wrong, please try again";
+				
+				if(result)
+				request.setAttribute("SUCCESS", message);
+				else
+				request.setAttribute("SUCCESS", error);
+				
+				// send back to the login page
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/change-owners-password.jsp");
+				dispatcher.forward(request, response);
+
+			} catch (Exception ex) {
+				throw new ServletException(ex);
+			}
+		}
+		
+		
 	// controller to activate or deactivate the existing user
 	private void disableOrEnableUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -320,59 +390,59 @@ public class userAccountControllerServlet extends HttpServlet {
 		listUsers(request, response);
 	}
 
-	private void updateUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	/*
+	 * private void updateUser(HttpServletRequest request, HttpServletResponse
+	 * response) throws Exception {
+	 * 
+	 * // read user info from form data int user_id =
+	 * Integer.parseInt(request.getParameter("user_id")); String username =
+	 * request.getParameter("username"); String password =
+	 * request.getParameter("password"); int user_type =
+	 * Integer.parseInt(request.getParameter("user_type")); boolean status =
+	 * Boolean.getBoolean(request.getParameter("status"));
+	 * 
+	 * // create a new user object UserAccount theUser = new UserAccount(user_id,
+	 * username, password, user_type, status);
+	 * 
+	 * // perform update on database userAccountDbUtil.updateUser(theUser);
+	 * 
+	 * // send them back to the "list users" page listUsers(request, response);
+	 * 
+	 * }
+	 */
+	/*
+	 * private void loadUser(HttpServletRequest request, HttpServletResponse
+	 * response) throws Exception {
+	 * 
+	 * // read user id from form data String theUserId =
+	 * request.getParameter("user_id");
+	 * 
+	 * // get user from database (db util) UserAccount theUser =
+	 * userAccountDbUtil.getUser(theUserId);
+	 * 
+	 * // place user in the request attribute request.setAttribute("THE_USER",
+	 * theUser);
+	 * 
+	 * // send to jsp page: update-user-form.jsp RequestDispatcher dispatcher =
+	 * request.getRequestDispatcher("/update-user-form.jsp");
+	 * 
+	 * dispatcher.forward(request, response); }
+	 */
 
-		// read user info from form data
-		int user_id = Integer.parseInt(request.getParameter("user_id"));
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		int user_type = Integer.parseInt(request.getParameter("user_type"));
-		boolean status = Boolean.getBoolean(request.getParameter("status"));
-
-		// create a new user object
-		UserAccount theUser = new UserAccount(user_id, username, password, user_type, status);
-
-		// perform update on database
-		userAccountDbUtil.updateUser(theUser);
-
-		// send them back to the "list users" page
-		listUsers(request, response);
-
-	}
-
-	private void loadUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		// read user id from form data
-		String theUserId = request.getParameter("user_id");
-
-		// get user from database (db util)
-		UserAccount theUser = userAccountDbUtil.getUser(theUserId);
-
-		// place user in the request attribute
-		request.setAttribute("THE_USER", theUser);
-
-		// send to jsp page: update-user-form.jsp
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/update-user-form.jsp");
-
-		dispatcher.forward(request, response);
-	}
-
-	private void createUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// read user info from form data
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		int user_type = Integer.parseInt(request.getParameter("user_type"));
-
-		// create a new user object
-		UserAccount theUser = new UserAccount(username, password, user_type);
-
-		// add the user to the database
-		userAccountDbUtil.createUser(theUser);
-
-		// send back to main page (the users list)
-		listUsers(request, response);
-	}
-
+	/*
+	 * private void createUser(HttpServletRequest request, HttpServletResponse
+	 * response) throws Exception { // read user info from form data String username
+	 * = request.getParameter("username"); String password =
+	 * request.getParameter("password"); int user_type =
+	 * Integer.parseInt(request.getParameter("user_type"));
+	 * 
+	 * // create a new user object UserAccount theUser = new UserAccount(username,
+	 * password, user_type);
+	 * 
+	 * // add the user to the database userAccountDbUtil.createUser(theUser);
+	 * 
+	 * // send back to main page (the users list) listUsers(request, response); }
+	 */
 	// List of Users
 	private void listUsers(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// get students list from dbUtil

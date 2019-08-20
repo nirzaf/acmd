@@ -71,7 +71,7 @@ public class PropertyDbUtil {
 
 			// create SQL update statement
 			String sql = "update tbl_property "
-					+ "set property_type=?, address=?, suitable_for=?, is_available=? ,owner=? , rented_by=?, charge=? "
+					+ "set property_type=?, address=?, suitable_for=?, is_available=? , rented_by=?, charge=? "
 					+ "where property_id=?";
 
 			// prepare statement
@@ -82,10 +82,9 @@ public class PropertyDbUtil {
 			myStmt.setString(2, theProperty.getAddress());
 			myStmt.setInt(3, theProperty.getSuitable_for());
 			myStmt.setInt(4, theProperty.getIs_available());
-			myStmt.setInt(5, theProperty.getOwner());
-			myStmt.setInt(6, theProperty.getRented_by());
-			myStmt.setFloat(7, theProperty.getCharge());
-			myStmt.setInt(8, theProperty.getProperty_id());
+			myStmt.setInt(5, theProperty.getRented_by());
+			myStmt.setFloat(6, theProperty.getCharge());
+			myStmt.setInt(7, theProperty.getProperty_id());
 
 			// execute SQL statement
 			myStmt.execute();
@@ -120,7 +119,7 @@ public class PropertyDbUtil {
 			c.close(myConn, myStmt, null);
 		}
 	}
-
+	
 	public GetProperty getProperty(int property_id) throws Exception {
 
 		GetProperty property = null;
@@ -179,6 +178,49 @@ public class PropertyDbUtil {
 		}
 	}
 
+	
+	public Property loadProperty(int property_id) throws Exception {
+
+		Property property = null;
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+		ResultSet myRs = null;
+
+		try {
+			// get connection to database
+			myConn = ds.getConnection();
+
+			// create sql to get selected owner
+			String sql = "SELECT * FROM tbl_property WHERE property_id =? AND isDeleted = 1";
+
+			// create prepared statement
+			myStmt = myConn.prepareStatement(sql);
+
+			// set params
+			myStmt.setInt(1, property_id);
+
+			// execute statement
+			myRs = myStmt.executeQuery();
+
+			// retrieve data from result set row
+			while (myRs.next()) {
+				int property_type = myRs.getInt("property_type");
+				String address = myRs.getString("address");
+				int suitable_for = myRs.getInt("suitable_for");
+				int availability = myRs.getInt("is_available");
+				int rented_by = myRs.getInt("rented_by");
+				float rent = myRs.getFloat("charge");
+				
+				// use the property during construction
+				property= new Property(property_id, property_type, address, suitable_for, availability, rented_by, rent);		
+			}
+
+			return property;
+		} finally {
+			c.close(myConn, myStmt, myRs);
+		}
+	}
+	
 	public List<Property> Properties(String search) throws Exception {
 
 		List<Property> properties = new ArrayList<>();

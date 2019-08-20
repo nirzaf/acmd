@@ -17,7 +17,7 @@
 		<h3>Sign-Up Now</h3>
 		<h5 style="color:red">Please fill up following details</h5>
 
-		<form action="userAccountControllerServlet" method="POST">
+		<form action="userAccountControllerServlet?command=REGISTER" method="POST">
 
 			<input type="hidden" name="command" value="REGISTER" />
 
@@ -30,12 +30,12 @@
 
 					<tr>
 						<td><label>Password:</label></td>
-						<td><input id="password" name="password" type="password" pattern="^\S{6,}$" onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Must have at least 6 characters' : ''); if(this.checkValidity()) form.password_two.pattern = this.value;" placeholder="Password" required></td>
+						<td><input id="password" name="password" type="password" pattern="^\S{4,}$" onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Must have at least 6 characters' : ''); if(this.checkValidity()) form.password_two.pattern = this.value;" placeholder="Password" required></td>
 					</tr>
 
 					<tr>
 						<td><label>Confirm PW:</label></td>
-						<td><input id="password_two" name="confirm_password" type="password" pattern="^\S{6,}$" onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Please enter the same Password as above' : '');" placeholder="Verify Password" required></td>
+						<td><input id="password_two" name="confirm_password" type="password" pattern="^\S{4,}$" onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Please enter the same Password as above' : '');" placeholder="Verify Password" required></td>
 					</tr>
 					
 					<tr>
@@ -48,7 +48,7 @@
 					
 					<tr>
 						<td><label></label></td>
-						<td><input type="submit" value="Sign-up" class="save" /> </td>
+						<td><input type="submit" value="Sign-up"/> </td>
 					</tr>									        
 				</tbody>		
 			</table>

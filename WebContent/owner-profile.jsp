@@ -9,7 +9,7 @@
 </head>
 
 <body>
-	<%@include file="owners-navigation.jsp"%>
+	<%@include file="navigation.jsp"%>
 
 	<div id="container">
 		<h3>${OWNER.first_name}'s Profile</h3>

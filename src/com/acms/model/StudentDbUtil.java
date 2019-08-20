@@ -66,7 +66,7 @@ public class StudentDbUtil {
 		}
 	}
 
-	public void addStudent(Student theStudent) throws Exception {
+	public boolean addStudent(Student theStudent) throws Exception {
 		Connection myConn = null;
 		PreparedStatement myStmt = null;
 
@@ -89,7 +89,10 @@ public class StudentDbUtil {
 			myStmt.setString(6, theStudent.getTelephone());
 
 			// execute sql insert
-			myStmt.execute();
+			int result = myStmt.executeUpdate();
+
+			if(result > 0)return true;else return false;
+			
 		} finally {
 			// clean up JDBC objects
 			c.close(myConn, myStmt, null);
@@ -132,13 +135,13 @@ public class StudentDbUtil {
 
 		Connection myConn = null;
 		PreparedStatement myStmt = null;
-		ResultSet myRs = null;
+		ResultSet result = null;
 
 		try {
 			// get connection to database
 			myConn = ds.getConnection();
 			// create sql to get selected student
-			String sql = "select first_name from tbl_student where student_id=?";
+			String sql = "select count(*) from tbl_student where student_id=?";
 
 			// create prepared statement
 			myStmt = myConn.prepareStatement(sql);
@@ -147,16 +150,13 @@ public class StudentDbUtil {
 			myStmt.setInt(1, studentId);
 
 			// execute statement
-			myRs = myStmt.executeQuery();
+			result = myStmt.executeQuery();
 
 			// retrieve data from result set row	
-			while (myRs.next()) {
-				System.out.println(" Your in If condition true ");
-				return true;
-			} 
-			return false;
+			if(result!= null)return true;else return false;
+		
 		} finally {
-			c.close(myConn, myStmt, myRs);
+			c.close(myConn, myStmt, result);
 		}
 	}
 	

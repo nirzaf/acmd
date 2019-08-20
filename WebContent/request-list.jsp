@@ -9,26 +9,9 @@
 </head>
 
 <body>
-	 <%@include file="owners-navigation.jsp" %>
+	 <%@include file="navigation.jsp" %>
 
-	<!-- conditional display field -->
-	<%
-		if (user_type == "2") {
-	%>
-	<form name="command">
-		<input type="button" value="Add Owner"
-			onclick="window.location.href='add-owner-form.jsp'; return false;"
-			class="add-student-button">
-	</form>
-
-	<%
-		}
-	%>
-
-	<form name="searchForm" action="propertyController" method="GET">
-		<input type="text" name="search" class="form-control"
-			placeholder="Search Properties">
-		<button type="submit" value="search" class="add-student-button">Search</button>
+	<form name="viewRequestForm" action="propertyController" method="GET">
 		<div id="container">
 			<div id="content">
 				<table>
@@ -42,10 +25,10 @@
 						<th>Action</th>
 					</tr>
 					<c:forEach var="Request" items="${REQ_LIST}">
-
 						<c:url var="tempLink" value="viewRequestController">
-							<c:param name="command" value="LIST" />
-							<c:param name="Id" value="${tempRequest.Request_id}" />
+							<c:param name="command" value="ACCEPT" />
+							<c:param name="request_id" value="${Request.request_id}" />
+							<c:param name="owner_id" value="${Request.owner_id}" />
 						</c:url>
 						<tr>
 							<td>${Request.request_id}</td>
@@ -53,8 +36,8 @@
 							<td>${Request.requested_property}</td>
 							<td>${Request.requested_date}</td>
 							<td>${Request.date_of_view}</td>
-							<td>${(Request.status)?'Approved':'Not Approved'}</td>
-							<td><a href="${tempLink}">Approve Now</a></td>
+							<td>${(Request.status)?'Accepted':'Not Accepted'}</td>
+							<td><a href="${tempLink}" onclick="if (!(confirm('${(Request.status)?'Are you sure you want to reject the request?':'Are you sure you want accept the request?'}'))) return false">${(Request.status)?'Reject':'Accept'}</a></td>
 						</tr>
 					</c:forEach>
 				</table>
