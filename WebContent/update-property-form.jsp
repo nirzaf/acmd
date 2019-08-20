@@ -47,7 +47,7 @@
 					<tr>
 						<td><label>Rented By : </label></td>
 						<td><label>${PROPERTY.rented_by}</label></td>
-						<td><input type="hidden" name="user_id" value="<%=request.getSession().getAttribute("user_id")%>" /></td>
+						<td><input type="hidden" name="user_id" value="<%=userId%>" /></td>
 					</tr>
 
 					<tr>

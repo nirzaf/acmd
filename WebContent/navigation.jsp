@@ -58,9 +58,6 @@ body {
 				user_type = Integer.parseInt(cookie.getValue());
 		}
 	}
-
-	response.setIntHeader("Refresh", 60);
-
 	if (userId == 0)
 		response.sendRedirect("userAccountControllerServlet");
 %>
@@ -101,13 +98,13 @@ body {
 	%>
 </div>
 <script type="text/javascript">
-	window.onload = function() {
+/* 	window.onload = function() {
 		if (!window.location.hash) {
 			window.location = window.location + '#loaded';
 			window.location.reload();
 		}
 	}
-	
+ */	
 	function disableBackButton(){
 	window.history.forward();
 	}

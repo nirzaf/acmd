@@ -39,14 +39,14 @@
 					</tr>
 					<tr>
 						<td><label>Suitable For:</label></td>
-						<td><input type="text" name="suitable" /></td>
+						<td><input type="number" name="suitable" /></td>
 						<td><input type="hidden" name="is_available" value="1" /></td>
-						<td><input type="hidden" name="owner_id" value="<%=request.getSession().getAttribute("user_id")%>" /></td>
+						<td><input type="hidden" name="owner_id" value="<%=userId%>" /></td>
 						<td><input type="hidden" name="rented_by" value="0" /></td>
 					</tr>
 					<tr>
 						<td><label>Charge:</label></td>
-						<td><input type="text" name="charge" /></td>
+						<td><input type="number" name="charge" /></td>
 					</tr>
 					<tr>
 						<td><label></label></td>

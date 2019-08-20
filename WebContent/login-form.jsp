@@ -12,14 +12,6 @@
 
 <link type="text/css" rel="stylesheet" href="css/style.css">
 <link type="text/css" rel="stylesheet" href="css/add-student-style.css">
-<script type="text/javascript">
-window.onload = function() {
-    if(!window.location.hash) {
-        window.location = window.location + '#loaded';
-        window.location.reload();
-    }
-}
-</script>
 </head>
 
 <body>
