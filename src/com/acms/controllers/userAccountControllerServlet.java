@@ -28,7 +28,7 @@ import com.acms.model.UserAccountDbUtil;
 public class userAccountControllerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	@Resource(name="jdbc/ams")
+	@Resource(name = "jdbc/ams")
 	private DataSource ds;
 	private UserAccountDbUtil userAccountDbUtil;
 	private StudentDbUtil studentDbUtil;
@@ -85,50 +85,47 @@ public class userAccountControllerServlet extends HttpServlet {
 		try {
 			// read the "command" parameter
 			String theCommand = request.getParameter("command");
-			// if the command is missing, then default to listing users
-			if (theCommand == null) {
-				theCommand = "LOGOUT";
-			}
+			if (theCommand != null) {				
+				// route to the appropriate method
+				switch (theCommand) {
 
-			// route to the appropriate method
-			switch (theCommand) {
-
-			case "LIST":
-				listUsers(request, response);
-				break;
-			case "DISABLE":
-				disableOrEnableUser(request, response);
-				break;
-			case "LOGINPAGE":
-				loginPage(request, response);
-				break;
-			case "SIGNUP":
-				signUpPage(request, response);
-				break;
-			case "LOGOUT":
-				signOut(request, response);
-				break;
-			case "CHANGE":
-				changePW(request, response);
-				break;
-			case "CHANGEO":
-				changeOPW(request, response);
-				break;
-			case "CHANGEA":
-				changeAPW(request, response);
-				break;
-			case "CHANGE_PW":
-				changePassword(request, response);
-				break;
-			case "CHANGE_OPW":
-				changeOPassword(request, response);
-				break;
-			case "CHANGE_APW":
-				changeAPassword(request, response);
-				break;
-			default:
-				signOut(request, response);
-				break;
+				case "LIST":
+					listUsers(request, response);
+					break;
+				case "DISABLE":
+					disableOrEnableUser(request, response);
+					break;
+				case "LOGINPAGE":
+					loginPage(request, response);
+					break;
+				case "SIGNUP":
+					signUpPage(request, response);
+					break;
+				case "LOGOUT":
+					signOut(request, response);
+					break;
+				case "CHANGE":
+					changePW(request, response);
+					break;
+				case "CHANGEO":
+					changeOPW(request, response);
+					break;
+				case "CHANGEA":
+					changeAPW(request, response);
+					break;
+				case "CHANGE_PW":
+					changePassword(request, response);
+					break;
+				case "CHANGE_OPW":
+					changeOPassword(request, response);
+					break;
+				case "CHANGE_APW":
+					changeAPassword(request, response);
+					break;
+				default:
+					signOut(request, response); // if the command is missing, then default to listing users
+					break;
+				}
 			}
 		} catch (Exception ex) {
 			throw new ServletException(ex);
@@ -146,18 +143,19 @@ public class userAccountControllerServlet extends HttpServlet {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/change-student-password.jsp");
 		dispatcher.forward(request, response);
 	}
-	
+
 	// method for change password page controller route
 	private void changeOPW(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/change-owners-password.jsp");
 		dispatcher.forward(request, response);
 	}
-	
+
 	// method for change password page controller route
 	private void changeAPW(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/change-admin-password.jsp");
 		dispatcher.forward(request, response);
 	}
+
 	// method for sign up page controller route
 	private void signUpPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/sign-up-form.jsp");
@@ -166,20 +164,12 @@ public class userAccountControllerServlet extends HttpServlet {
 
 	// method for sign up page controller route
 	private void signOut(HttpServletRequest request, HttpServletResponse response) throws Exception {
-			
-			 response.setHeader("Cache-Control", "no-cache");
-			 response.setHeader("Pragma", "no-cache");
-			 response.setHeader("Expires" ,"0"); 
-		
-			if(userIdCookie !=null && userTypeCookie !=null) {
-				userIdCookie.setMaxAge(0);
-				userTypeCookie.setMaxAge(0);
-			}
-			
-			response.setHeader("cache", "cookies");
-			RequestDispatcher dispatcher = request.getRequestDispatcher("/login-form.jsp"); 
-			dispatcher.forward(request, response);	 
-		
+		if (userIdCookie != null && userTypeCookie != null) {
+			userIdCookie.setMaxAge(0);
+			userTypeCookie.setMaxAge(0);
+		}
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/login-form.jsp");
+		dispatcher.forward(request, response);
 	}
 
 	// method for user authentication controller
@@ -187,7 +177,7 @@ public class userAccountControllerServlet extends HttpServlet {
 		try {
 			Student theStudent = null;
 			Owner theOwner = null;
-			List<UserAccount> theUsers= null;
+			List<UserAccount> theUsers = null;
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
 
@@ -201,14 +191,14 @@ public class userAccountControllerServlet extends HttpServlet {
 			userAccount.setUsername(username);
 			userAccount.setPassword(password);
 
-			// creating object for UserAccountDbUtil.			
+			// creating object for UserAccountDbUtil.
 			UserAccountDbUtil uaDbUtil = new UserAccountDbUtil(ds);
-			
+
 			// This class contains main logic of the login part.
 			boolean validateAuth = uaDbUtil.Auth(userAccount);
 
 			// If validateAuth boolean is true means username and password is correct
-			if (validateAuth) { 				
+			if (validateAuth) {
 				// getting user_id and user_type value of current logged in user
 				int user_id = userAccountDbUtil.getUserId(username, password);
 				int user_type = userAccountDbUtil.getUserType(user_id);
@@ -217,20 +207,17 @@ public class userAccountControllerServlet extends HttpServlet {
 				String userId = Integer.toString(user_id);
 				String userType = Integer.toString(user_type);
 
-				if(userIdCookie !=null)userIdCookie = null; 
-				if(userTypeCookie !=null)userTypeCookie = null; 
-				
 				userIdCookie = new Cookie("user_id", userId);
 				userTypeCookie = new Cookie("user_type", userType);
-				
+
 				// setting cookie to expiry in 60 mins
 				userIdCookie.setMaxAge(60 * 360);
 				userTypeCookie.setMaxAge(60 * 360);
-				
-				//add the cookies on set response 
+
+				// add the cookies on set response
 				response.addCookie(userIdCookie);
-				response.addCookie(userTypeCookie);	
-			
+				response.addCookie(userTypeCookie);
+
 				if (user_id > 0 && user_type == 1) {
 					boolean isExist = studentDbUtil.isStudentExist(user_id);
 					if (!isExist) {
@@ -244,16 +231,18 @@ public class userAccountControllerServlet extends HttpServlet {
 						Student student = new Student(student_id, firstName, lastName, address, email, telephone);
 						// add the student to the database
 						studentDbUtil.addStudent(student);
-					} 
+					}
 					// get student from database (db util)
 					theStudent = studentDbUtil.getStudent(user_id);
 					// place student in the request attribute
 					request.setAttribute("THE_STUDENT", theStudent);
 					// send to jsp page: update-student-form.jsp
-					RequestDispatcher dispatcher = request.getRequestDispatcher("/update-student-form.jsp");
+					System.out.println("You are here now : " + user_id);
+					System.out.println("You are here now : " + user_type);
+					RequestDispatcher dispatcher = request.getRequestDispatcher("/auth.jsp");
 					dispatcher.forward(request, response);
 				} else if (user_id > 0 && user_type == 2) {
-					boolean isExist = ownerDbUtil.isOwnerExist(user_id);					
+					boolean isExist = ownerDbUtil.isOwnerExist(user_id);
 					if (!isExist) {
 						int owner_id = user_id;
 						String firstName = "First Name";
@@ -265,24 +254,28 @@ public class userAccountControllerServlet extends HttpServlet {
 						Owner owner = new Owner(owner_id, firstName, lastName, address, email, telephone);
 						// add the student to the database
 						ownerDbUtil.addOwner(owner);
-					} 
-					
+					}
+
 					// get owner from database (db util)
 					theOwner = ownerDbUtil.getOwner(user_id);
 					// place owner in the request attribute
 					request.setAttribute("THE_OWNER", theOwner);
 					// send to jsp page: update-owner-form.jsp
-					RequestDispatcher dispatcher = request.getRequestDispatcher("/update-owner-form.jsp");
+					System.out.println("You are here now : " + user_id);
+					System.out.println("You are here now : " + user_type);
+					RequestDispatcher dispatcher = request.getRequestDispatcher("/auth.jsp");
 					dispatcher.forward(request, response);
 				} else {
 					// then it is the admin account
 					theUsers = userAccountDbUtil.getUserAccounts();
 					// place owner in the request attribute
-					request.setAttribute("USER_LIST", theUsers);			
-					RequestDispatcher req = request.getRequestDispatcher("list-users.jsp");
+					request.setAttribute("USER_LIST", theUsers);
+					System.out.println("You are here now : " + user_id);
+					System.out.println("You are here now : " + user_type);
+					RequestDispatcher req = request.getRequestDispatcher("auth.jsp");
 					req.forward(request, response);
 				}
-			} else { 
+			} else {
 				// else username and password is incorrect return to the login page
 				request.setAttribute("Message", Message);
 				RequestDispatcher req = request.getRequestDispatcher("login-form.jsp");
@@ -320,97 +313,97 @@ public class userAccountControllerServlet extends HttpServlet {
 			throw new ServletException(ex);
 		}
 	}
-	
-		// controller to change students password account
-		private void changePassword(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-			try {
-				int userId = Integer.parseInt(request.getParameter("user_id"));
-				String password = request.getParameter("password");
+	// controller to change students password account
+	private void changePassword(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-				// create a new user object
-				UserAccount theUser = new UserAccount(userId, password);
+		try {
+			int userId = Integer.parseInt(request.getParameter("user_id"));
+			String password = request.getParameter("password");
 
-				// update password for relevant user_id
-				boolean result = userAccountDbUtil.updatePassword(theUser);
+			// create a new user object
+			UserAccount theUser = new UserAccount(userId, password);
 
-				String message = "Password Updated Successfully";
-				String error = "Something went wrong, please try again";
-				
-				if(result)
+			// update password for relevant user_id
+			boolean result = userAccountDbUtil.updatePassword(theUser);
+
+			String message = "Password Updated Successfully";
+			String error = "Something went wrong, please try again";
+
+			if (result)
 				request.setAttribute("SUCCESS", message);
-				else
+			else
 				request.setAttribute("SUCCESS", error);
-				
-				// send back to the login page
-				RequestDispatcher dispatcher = request.getRequestDispatcher("/change-student-password.jsp");
-				dispatcher.forward(request, response);
 
-			} catch (Exception ex) {
-				throw new ServletException(ex);
-			}
+			// send back to the login page
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/change-student-password.jsp");
+			dispatcher.forward(request, response);
+
+		} catch (Exception ex) {
+			throw new ServletException(ex);
 		}
+	}
 
-		// controller to change owners password account
-		private void changeOPassword(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	// controller to change owners password account
+	private void changeOPassword(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-			try {
-				int userId = Integer.parseInt(request.getParameter("user_id"));
-				String password = request.getParameter("password");
+		try {
+			int userId = Integer.parseInt(request.getParameter("user_id"));
+			String password = request.getParameter("password");
 
-				// create a new user object
-				UserAccount theUser = new UserAccount(userId, password);
+			// create a new user object
+			UserAccount theUser = new UserAccount(userId, password);
 
-				// update password for relevant user_id
-				boolean result = userAccountDbUtil.updatePassword(theUser);
+			// update password for relevant user_id
+			boolean result = userAccountDbUtil.updatePassword(theUser);
 
-				String message = "Password Updated Successfully";
-				String error = "Something went wrong, please try again";
-				
-				if(result)
+			String message = "Password Updated Successfully";
+			String error = "Something went wrong, please try again";
+
+			if (result)
 				request.setAttribute("SUCCESS", message);
-				else
+			else
 				request.setAttribute("SUCCESS", error);
-				
-				// send back to the login page
-				RequestDispatcher dispatcher = request.getRequestDispatcher("/change-owners-password.jsp");
-				dispatcher.forward(request, response);
 
-			} catch (Exception ex) {
-				throw new ServletException(ex);
-			}
+			// send back to the login page
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/change-owners-password.jsp");
+			dispatcher.forward(request, response);
+
+		} catch (Exception ex) {
+			throw new ServletException(ex);
 		}
-		
-		// controller to change admin password account
-		private void changeAPassword(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	}
 
-			try {
-				int userId = Integer.parseInt(request.getParameter("user_id"));
-				String password = request.getParameter("password");
+	// controller to change admin password account
+	private void changeAPassword(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-				// create a new user object
-				UserAccount theUser = new UserAccount(userId, password);
+		try {
+			int userId = Integer.parseInt(request.getParameter("user_id"));
+			String password = request.getParameter("password");
 
-				// update password for relevant user_id
-				boolean result = userAccountDbUtil.updatePassword(theUser);
+			// create a new user object
+			UserAccount theUser = new UserAccount(userId, password);
 
-				String message = "Password Updated Successfully";
-				String error = "Something went wrong, please try again";
-				
-				if(result)
+			// update password for relevant user_id
+			boolean result = userAccountDbUtil.updatePassword(theUser);
+
+			String message = "Password Updated Successfully";
+			String error = "Something went wrong, please try again";
+
+			if (result)
 				request.setAttribute("SUCCESS", message);
-				else
+			else
 				request.setAttribute("SUCCESS", error);
-				
-				// send back to the login page
-				RequestDispatcher dispatcher = request.getRequestDispatcher("/change-admin-password.jsp");
-				dispatcher.forward(request, response);
 
-			} catch (Exception ex) {
-				throw new ServletException(ex);
-			}
+			// send back to the login page
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/change-admin-password.jsp");
+			dispatcher.forward(request, response);
+
+		} catch (Exception ex) {
+			throw new ServletException(ex);
 		}
-		
+	}
+
 	// controller to activate or deactivate the existing user
 	private void disableOrEnableUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
 

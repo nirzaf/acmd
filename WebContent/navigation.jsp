@@ -1,51 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
-
-<!DOCTYPE html>
-<html>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="-1">
-<meta http-equiv="Cache-Control"
-	content="no-cache, no-store, must-revalidate">
-<head>
-</head>
-
 <link type="text/css" rel="stylesheet" href="css/style.css">
-<style>
-body {
-	margin: 0;
-	font-family: Arial, Helvetica, sans-serif;
-}
-
-.topnav {
-	overflow: hidden;
-}
-
-.topnav a {
-	float: left;
-	color: #00000;
-	text-align: center;
-	padding: 14px 16px;
-	text-decoration: none;
-	font-size: 17px;
-}
-
-.topnav a:hover {
-	background-color: #ddd;
-	color: black;
-}
-
-.topnav a.active {
-	background-color: #4CAF50;
-	color: white;
-}
-</style>
-<body>
 <script type="text/javaScript"> function disableBackButton(){window.history.forward();}setTimeout("disableBackButton()", 0); </script>
 <%
-	response.setHeader("Cache-Control", "no-cache");
-	response.setHeader("Pragma", "no-cache");
-	response.setHeader("Expires", "0");
 	// This scriplet function will validate the logged user type
 	int userId = 0;
 	int user_type = 0;
@@ -76,7 +32,7 @@ body {
 	<a href="ownerControllerServlet?command=LIST">List of Owners</a>
 	<a href="propertyController">Properties</a> 
 	<a href="userAccountControllerServlet?command=CHANGEA">Change Password</a>  
-	<a href="userAccountControllerServlet">Logout</a>
+	<a href="userAccountControllerServlet?command=LOGOUT">Logout</a>
 	<%
 		} else if (user_type == 2) {
 	%>
@@ -84,7 +40,7 @@ body {
 	<a href="propertyController?command=MYLIST&owner_id=<%=userId%>">My Properties </a> 
 	<a href="viewRequestController?command=LIST&owner_id=<%=userId%>">View Request</a> 
 	<a href="userAccountControllerServlet?command=CHANGEO">Change Password</a> 
-	<a href="userAccountControllerServlet">Logout</a>
+	<a href="userAccountControllerServlet?command=LOGOUT">Logout</a>
 	<%
 		} else if (user_type == 1) {
 	%>
@@ -92,22 +48,8 @@ body {
 	<a href="propertyController">Properties</a> 
 	<a href="viewRequestController?command=MYLIST&student_id=<%=userId%>">My View Requests </a> 
 	<a href="userAccountControllerServlet?command=CHANGE">Change Password</a> 
-	<a href="userAccountControllerServlet">Logout</a>
+	<a href="userAccountControllerServlet?command=LOGOUT">Logout</a>
 	<%
 		}
 	%>
 </div>
-<script type="text/javascript">
-/* 	window.onload = function() {
-		if (!window.location.hash) {
-			window.location = window.location + '#loaded';
-			window.location.reload();
-		}
-	}
- */	
-	function disableBackButton(){
-	window.history.forward();
-	}
-	setTimeout("disableBackButton()", 0);
-</script>
-</body>

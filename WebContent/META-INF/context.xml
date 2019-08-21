@@ -2,9 +2,9 @@
 
   <Resource name="jdbc/ams" 
   			auth="Container" type="javax.sql.DataSource"
-               maxActive="20" maxIdle="5" maxWait="10000"
+               maxIdle="5" maxWait="10000"
                username="root" password="" 
                driverClassName="com.mysql.jdbc.Driver"
-               url="jdbc:mysql://localhost:3306/ams?useSSL=false"/>
+               url="jdbc:mysql://localhost:3306/ams?useSSL=false" maxTotal="8"/>
 
 </Context>
