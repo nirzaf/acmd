@@ -8,14 +8,10 @@
 <link type="text/css" rel="stylesheet" href="css/style.css">
 <link type="text/css" rel="stylesheet" href="css/add-student-style.css">
 </head>
-
 <body>
-
 	<%@include file="navigation.jsp"%>
-
 	<div id="container">
 		<h3>Update Property Details</h3>
-
 		<form action="propertyController" method="GET">
 			<input type="hidden" name="command" value="EDIT" /> <input
 				type="hidden" name="property_id" value="${MYPROPERTY.property_id}" />

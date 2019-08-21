@@ -30,7 +30,6 @@
 					<th>Action<>
 				</tr>
 				<c:forEach var="tempStudent" items="${STUDENT_LIST}">
-
 					<!-- set up a link for each student -->
 					<c:url var="tempLink" value="studentControllerServlet">
 						<c:param name="command" value="LOAD" />
@@ -42,7 +41,6 @@
 						<c:param name="command" value="DELETE" />
 						<c:param name="student_id" value="${tempStudent.student_id}" />
 					</c:url>
-
 					<tr>
 						<td>${tempStudent.student_id}</td>
 						<td>${tempStudent.first_name}</td>
@@ -50,8 +48,8 @@
 						<td>${tempStudent.address}</td>
 						<td>${tempStudent.email}</td>
 						<td>${tempStudent.telephone}</td>
-						<td><a href="${tempLink}">Update</a> | <a href="${deleteLink}"
-							onclick="if (!(confirm('Are you sure you want to delete this student?'))) return false">Delete</a>
+						<td><a href="${tempLink}">Update</a> | 
+						<a href="${deleteLink}" onclick="if (!(confirm('Are you sure you want to delete this student?'))) return false">Delete</a>
 						</td>
 					</tr>
 				</c:forEach>

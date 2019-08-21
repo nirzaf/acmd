@@ -65,11 +65,11 @@ public class userAccountControllerServlet extends HttpServlet {
 			case "LOGIN":
 				userLogin(request, response);
 				break;
-
+				
 			case "REGISTER":
 				registerUser(request, response);
 				break;
-
+				
 			default:
 				userLogin(request, response);
 				break;
@@ -77,7 +77,6 @@ public class userAccountControllerServlet extends HttpServlet {
 		} catch (Exception ex) {
 			throw new ServletException(ex);
 		}
-
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -237,8 +236,6 @@ public class userAccountControllerServlet extends HttpServlet {
 					// place student in the request attribute
 					request.setAttribute("THE_STUDENT", theStudent);
 					// send to jsp page: update-student-form.jsp
-					System.out.println("You are here now : " + user_id);
-					System.out.println("You are here now : " + user_type);
 					RequestDispatcher dispatcher = request.getRequestDispatcher("/auth.jsp");
 					dispatcher.forward(request, response);
 				} else if (user_id > 0 && user_type == 2) {
@@ -261,8 +258,6 @@ public class userAccountControllerServlet extends HttpServlet {
 					// place owner in the request attribute
 					request.setAttribute("THE_OWNER", theOwner);
 					// send to jsp page: update-owner-form.jsp
-					System.out.println("You are here now : " + user_id);
-					System.out.println("You are here now : " + user_type);
 					RequestDispatcher dispatcher = request.getRequestDispatcher("/auth.jsp");
 					dispatcher.forward(request, response);
 				} else {
@@ -270,8 +265,6 @@ public class userAccountControllerServlet extends HttpServlet {
 					theUsers = userAccountDbUtil.getUserAccounts();
 					// place owner in the request attribute
 					request.setAttribute("USER_LIST", theUsers);
-					System.out.println("You are here now : " + user_id);
-					System.out.println("You are here now : " + user_type);
 					RequestDispatcher req = request.getRequestDispatcher("auth.jsp");
 					req.forward(request, response);
 				}

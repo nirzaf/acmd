@@ -127,7 +127,6 @@ public class ownerControllerServlet extends HttpServlet {
 
 		// send them back to the owners profile page
 		loadProfile(request, response);
-
 	}
 
 	private void loadOwner(HttpServletRequest request, HttpServletResponse response) throws Exception {

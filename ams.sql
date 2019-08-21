@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 20, 2019 at 06:23 PM
+-- Generation Time: Aug 21, 2019 at 06:53 PM
 -- Server version: 10.1.40-MariaDB
 -- PHP Version: 7.3.5
 
@@ -43,10 +43,11 @@ CREATE TABLE `tbl_owner` (
 --
 
 INSERT INTO `tbl_owner` (`owner_id`, `first_name`, `last_name`, `address`, `email`, `telephone`, `isDeleted`) VALUES
-(10, 'Farook', 'Fazrin', '412 bulugohotenne, Batugoda', 'mfmfazrin1986@gmail.com', '+947744444444', 1),
+(10, 'Vino', 'Jan ', '412 kandy road, colombo', 'vinojan1986@gmail.com', '+947744444444', 1),
 (11, 'Jerom', 'Sanjeewan', '123, Kandy Road, Colombo', 'abcd@gmail.com', '0772045555', 1),
 (20, 'Azeem', 'Mohamed', '321, Owner Street, Colombo', 'azeemproperties@gmail.com', '0772019321', 1),
-(21, 'Suja', 'Ahmed', '321, Matale Road, Kandy', 'abcd@gmail.com', '0772049123', 1);
+(21, 'Suja', 'Ahmed', '321, Matale Road, Kandy', 'abcd@gmail.com', '0772049123', 1),
+(26, 'Vino', 'Jagathesh', '123, main street, colombo', 'abcd@gmail.com', '0771231234', 1);
 
 -- --------------------------------------------------------
 
@@ -102,7 +103,14 @@ INSERT INTO `tbl_property` (`property_id`, `property_type`, `address`, `suitable
 (15, 4, '875 Beaver Ridge Ave.  Hinesville, GA 31313', 4, 1, 21, 0, 4000, 1, 1),
 (16, 5, '4 Chapel Drive  Port Charlotte, FL 33952', 5, 1, 21, 0, 5000, 1, 1),
 (17, 6, '152 Leatherwood Street  Janesville, WI 53546', 12, 1, 21, 0, 12500, 1, 0),
-(18, 4, '9692 Wagon St.  Largo, FL 33771', 2, 1, 21, 0, 8000, 1, 0);
+(18, 4, '9692 Wagon St.  Largo, FL 33771', 2, 1, 21, 0, 8000, 1, 0),
+(19, 1, '132, new street', 5, 1, 10, 0, 5000, 1, 0),
+(20, 1, '132, new street', 5, 1, 10, 0, 5000, 1, 0),
+(21, 5, '123, new road, colombo', 10, 1, 26, 0, 10000, 0, 0),
+(22, 5, '123, new road, colombo', 10, 0, 26, 3, 10000, 1, 1),
+(23, 1, '412 bulugohotenne, Batugoda', 5, 1, 26, 0, 44444, 0, 0),
+(24, 1, '412 bulugohotenne, Batugoda', 5, 1, 26, 0, 44444, 0, 0),
+(25, 4, '123, kandy road, colombo 1234', 5, 1, 26, 0, 5000, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -153,7 +161,7 @@ CREATE TABLE `tbl_student` (
 INSERT INTO `tbl_student` (`student_id`, `first_name`, `last_name`, `address`, `email`, `telephone`, `isDeleted`) VALUES
 (1, 'fazrin', 'farook ', '412, Bulugohotenne, Batugoda, Kandy', 'mfmfazrin1986@gmail.com', '0772049000', 1),
 (2, 'jerom', 'sanjeewan', 'hekita, wattala', 'jerom@gmail.com', '0778898893', 1),
-(3, 'Zamra', 'Banu', 'kolonnawa, Colombo', 'zamra@gmail.com', '0776543212', 1),
+(3, 'Vino', 'Jenny', 'kolonnawa, Colombo', 'vin@gmail.com', '0776543212', 1),
 (4, 'Fazrin', 'Nuh', '123, Kandy Road, Matale', 'abcd@gmail.com', '0774321212', 1),
 (6, 'Arfath', 'Mohamed', '123, Bambalapitiya', 'abcd@gmail.com', '0773434343', 1),
 (7, 'Stuent', 'New', 'abcd Road', 'abcd@gmail.com', '07711111111', 1),
@@ -179,19 +187,20 @@ CREATE TABLE `tbl_users` (
 --
 
 INSERT INTO `tbl_users` (`user_id`, `username`, `password`, `user_type`, `status`) VALUES
-(3, 'zamra', '1234', 1, 1),
+(3, 'vinojan', '1234', 1, 1),
 (4, 'fazrin1', '1234', 1, 1),
 (6, 'arfath', '1234', 1, 1),
 (7, 'student', '123456', 1, 1),
-(8, 'Admin', '123456', 3, 1),
+(8, 'Admin', '1234', 3, 1),
 (9, 'stu', '123456', 1, 1),
-(10, 'fazrin', '1234', 2, 1),
+(10, 'vino', '1234', 2, 1),
 (11, 'jerom', '1234', 2, 1),
 (14, 'owner', '1234', 2, 1),
 (17, 'nirzaf1', '1234', 2, 1),
 (19, 'azeem', '1234', 1, 1),
 (20, 'azeem1', 'abcd', 2, 1),
-(21, 'suja', '1234', 2, 1);
+(21, 'suja', '1234', 2, 1),
+(26, 'vinoj', '1234', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -235,7 +244,12 @@ INSERT INTO `tbl_view_request` (`request_id`, `requested_by`, `requested_propert
 (19, 4, 4, '2019-08-19', '2019-08-31', 1, 1),
 (20, 3, 9, '2019-08-20', '2019-08-30', 1, 0),
 (21, 19, 14, '2019-08-20', '2019-08-30', 0, 1),
-(22, 3, 12, '2019-08-20', '2019-08-31', 0, 0);
+(22, 3, 12, '2019-08-20', '2019-08-31', 0, 0),
+(23, 3, 22, '2019-08-21', '2019-08-23', 1, 1),
+(24, 3, 16, '2019-08-21', '2019-08-31', 0, 0),
+(25, 3, 16, '2019-08-21', '2019-08-31', 0, 0),
+(26, 3, 13, '2019-08-21', '2019-08-31', 0, 0),
+(27, 3, 25, '2019-08-21', '2019-08-31', 1, 1);
 
 --
 -- Indexes for dumped tables
@@ -298,19 +312,19 @@ ALTER TABLE `tbl_payment`
 -- AUTO_INCREMENT for table `tbl_property`
 --
 ALTER TABLE `tbl_property`
-  MODIFY `property_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `property_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `tbl_users`
 --
 ALTER TABLE `tbl_users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `tbl_view_request`
 --
 ALTER TABLE `tbl_view_request`
-  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
