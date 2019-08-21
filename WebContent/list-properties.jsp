@@ -51,7 +51,9 @@
 					</q:forEach>
 				</table>
 			</div>
+			<% if(user_type == 3) {%>
 			<button onclick="exportTableToExcel('tblData', 'list-properties')">Export Table Data To Excel File</button>
+			<% } %>
 		</div>
 	</form>
 </body>
