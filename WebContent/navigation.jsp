@@ -37,7 +37,7 @@
 		} else if (user_type == 2) {
 	%>
 	<a href="ownerControllerServlet?command=PROFILE&owner_id=<%=userId%>"> My Profile </a>
-	<a href="propertyController">Properties </a>  
+	<a href="propertyController">All Properties </a>  
 	<a href="propertyController?command=MYLIST&owner_id=<%=userId%>">My Properties </a> 
 	<a href="viewRequestController?command=LIST&owner_id=<%=userId%>">View Request</a> 
 	<a href="userAccountControllerServlet?command=CHANGEO">Change Password</a> 
