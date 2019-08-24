@@ -13,12 +13,13 @@
 				user_type = Integer.parseInt(cookie.getValue());
 		}
 	}
-	if(user_type == 1)
-		response.sendRedirect("studentControllerServlet?command=LOAD&student_id="+userId);
-	else if(user_type == 2)
-		response.sendRedirect("ownerControllerServlet?command=LOAD&owner_id="+userId);
-	else if(user_type == 3)
-		response.sendRedirect("userAccountControllerServlet?command=LIST");
+	if(user_type == 1){
+		response.sendRedirect("propertyController");
+	}else if(user_type == 2){
+		response.sendRedirect("propertyController");
+	}else if(user_type == 3){
+		response.sendRedirect("propertyController");
+	}
 	else
-		response.sendRedirect("userAccountControllerServlet");
+		response.sendRedirect("userAccountControllerServlet?=command=SIGNOUT");
 %>

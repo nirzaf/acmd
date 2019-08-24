@@ -2,25 +2,20 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
 <meta http-equiv="Pragma" content="no-cache"> 
-<meta http-equiv="Expires" content="-1"> 
+<meta http-equiv="Expires" content="0"> 
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"> 
 
 	<%
-		 response.setHeader("Cache-Control", "no-cache");
-		 response.setHeader("Pragma", "no-cache");
-		 response.setHeader("Expires" ,"0"); 
-   		
-		int userId = 0;
-	    int user_type = 0;
-		Cookie[] cookies = request.getCookies();
-		if (cookies != null) {
-			for(Cookie cookie : request.getCookies()) {
-	            cookie.setMaxAge(0);
-	        }
-
-		}
-		if (userId == 0)
-			response.sendRedirect("userAccountControllerServlet");
+		 Cookie[] cookies = request.getCookies();
+	 	 if(cookies != null){
+			 for(Cookie cookie : request.getCookies()) {
+				 if (cookie.getName().equals("user_id"))
+						cookie.setMaxAge(1);
+				 if(cookie.getName().equals("user_type"))
+					 	cookie.setMaxAge(1);
+	        }      
+		} 
+		response.sendRedirect("userAccountControllerServlet?command=LOGINPAGE");
 	%>
 
 <script type="text/javascript">

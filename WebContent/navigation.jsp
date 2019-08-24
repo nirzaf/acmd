@@ -27,16 +27,17 @@
 	<%
 		if (user_type == 3) {
 	%>
+	<a href="propertyController">Properties</a> 
 	<a href="userAccountControllerServlet?command=LIST">User accounts </a>
 	<a href="studentControllerServlet?command=LIST">List of Students</a> 
 	<a href="ownerControllerServlet?command=LIST">List of Owners</a>
-	<a href="propertyController">Properties</a> 
 	<a href="userAccountControllerServlet?command=CHANGEA">Change Password</a>  
 	<a href="userAccountControllerServlet?command=LOGOUT">Logout</a>
 	<%
 		} else if (user_type == 2) {
 	%>
-	<a href="ownerControllerServlet?command=PROFILE&owner_id=<%=userId%>"> My Profile </a> 
+	<a href="ownerControllerServlet?command=PROFILE&owner_id=<%=userId%>"> My Profile </a>
+	<a href="propertyController">Properties </a>  
 	<a href="propertyController?command=MYLIST&owner_id=<%=userId%>">My Properties </a> 
 	<a href="viewRequestController?command=LIST&owner_id=<%=userId%>">View Request</a> 
 	<a href="userAccountControllerServlet?command=CHANGEO">Change Password</a> 

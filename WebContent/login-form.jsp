@@ -16,7 +16,7 @@
 
 <body>
 
-<%
+<%-- <%
 	 response.setHeader("Cache-Control", "no-cache");
 	 response.setHeader("Pragma", "no-cache");
 	 response.setHeader("Expires" ,"0");
@@ -29,7 +29,7 @@
 	 userTypeCookie.setPath("/");
      response.addCookie(userIdCookie);
      response.addCookie(userTypeCookie);
-%>
+%> --%>
 
 	<div id="wrapper">
 		<div id="header">

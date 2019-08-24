@@ -28,7 +28,9 @@
 						<th>Owner</th>
 						<th>Currently Rented By</th>
 						<th>Charge</th>
+						<% if(user_type == 1) {%>
 						<th>View Request</th>
+						<% } %>	
 					</tr>
 					<q:forEach var="tempProperty" items="${PROPERTY_LIST}">
 
@@ -44,9 +46,11 @@
 							<td>${tempProperty.owner}</td>
 							<td>${tempProperty.rented_by}</td>
 							<td>${tempProperty.charge}</td>
+							<% if(user_type == 1) {%>
 							<td> 
 								<a href="${tempLink}">View</a>	
-							</td>	
+							</td>
+							<% } %>	
 						</tr>
 					</q:forEach>
 				</table>
